@@ -1,11 +1,10 @@
 package util
 
 import (
-	//"bufio"
-	//"fmt"
 	"github.com/fatih/color"
 	"os/exec"
 
+	"strings"
 )
 
 func IsJavaInstalled() bool {
@@ -20,13 +19,14 @@ func IsJavaInstalled() bool {
 	}
 }
 
-func RunVersionCheck() {
-	out, err := exec.Command("java", "-version").CombinedOutput()
+func RunVersionCheck() bool {
+	out, _ := exec.Command("java", "-version").CombinedOutput()
 
-	if err != nil {
+	n := string(out)
+
+	if strings.Contains(n, "1.8") {
+		return true
+	} else {
+		return false
 	}
-
-	//DownloadFromUrl()
-
-	color.Green("The installed java version is\n%s", out)
 }

@@ -73,7 +73,7 @@ func RuntimeDownloader()  {
 	path := getMcDir() + "/runtime"
 	darwin := "http://launcher.mojang.com/jre/osx-64/1.8.0_74/241139aa590e2aa139c0f0ede1dc98fdce3e3776/jre-osx-64-1.8.0_74.lzma"
 	win_386 := "http://launcher.mojang.com/jre/win-32/1.8.0_51/9e6a4608c1116ee064d5ec4cabb9410bc4677f3c/jre-win-32-1.8.0_51.lzma"
-	win_amd64 := "http://launcher.mojang.com/jre/win-32/1.8.0_51/9e6a4608c1116ee064d5ec4cabb9410bc4677f3c/jre-win-32-1.8.0_51.lzma"
+	win_amd64 := "http://launcher.mojang.com/jre/win-64/1.8.0_51/3cb2e56d3f00a8a9fe1ca7e0e74380fdf7556cb0/jre-win-64-1.8.0_51.lzma"
 	checkForRuntime()
 	switch GetThisPlatform() {
 	case "windows":

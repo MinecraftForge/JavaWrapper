@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/illyohs/forgewrapper/util"
-	"github.com/fatih/color"
 	"os"
+	"github.com/fatih/color"
+	"github.com/Illyohs/forgewrapper/util"
 )
 
 func main() {
