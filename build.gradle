@@ -1,0 +1,21 @@
+plugins {
+  id 'org.echocat.golang' version '0.1.12'
+}
+
+group 'github.com/illyohs/forgewrapper'
+version '0.0.1'
+
+golang {
+    platforms = System.getProperty("platforms", "windows-amd64,windows-386,darwin-amd64")
+    dependencies {
+        build 'github.com/fatih/color'
+        build 'github.com/ulikunitz/xz/cmd/gxz'
+    }
+
+    build {
+        useTemporaryGopath = true
+        excludes = ['.git/**', 'build.gradle', 'build/**', '.gradle/**', 'gradle/**']
+
+    }
+
+}
