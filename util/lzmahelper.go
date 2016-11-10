@@ -1,15 +1,14 @@
 package util
 
 import (
-	//"io/ioutil"
-	//"github.com/fatih/color"
+    "io"
+    "github.com/lxq/lzma"
 )
 
-func DecompressLzma(file string, destination string) {
-	//lz, err := ioutil.ReadFile(file)
-	//
-	//if err != nil {
-	//	color.Red("Unable to read %s", file)
-	//}
+func DecompFile(file string)  {
 
+}
+
+func decompress(in io.Reader) io.Reader  {
+   return lzma.NewReader(in)
 }

@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/illyohs/forgewrapper/util"
 	"os"
 	"github.com/fatih/color"
-	"github.com/Illyohs/forgewrapper/util"
 )
 
 func main() {
@@ -12,10 +12,10 @@ func main() {
 		color.Red("The forge wrapper doesn't support %s", util.GetThisPlatform())
 		os.Exit(1)
 	}
+	util.CheckForLauncher()
+	util.LaunchWithSysJava()
 	fmt.Println(util.GetArch())
 	fmt.Println(util.IsValidPlatFrom())
 	fmt.Println(util.IsValidArch())
-	util.IsJavaInstalled()
-	util.RunVersionCheck()
-	util.RuntimeDownloader()
+
 }

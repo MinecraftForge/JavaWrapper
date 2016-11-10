@@ -36,4 +36,3 @@ func DownloadFromUrl(url string, path string) {
 	}
 	fmt.Println(n, "bytes downloaded.")
 }
-

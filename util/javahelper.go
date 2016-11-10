@@ -19,6 +19,12 @@ func IsJavaInstalled() bool {
 	}
 }
 
+func LaunchWithSysJava() {
+	color.Green("ForgeWrapper is now lauching the laucnher")
+
+	exec.Command("java", "-jar", getMcDir() + "/launcher.jar").Run()
+}
+
 func RunVersionCheck() bool {
 	out, _ := exec.Command("java", "-version").CombinedOutput()
 

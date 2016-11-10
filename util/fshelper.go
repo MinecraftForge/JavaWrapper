@@ -2,10 +2,10 @@ package util
 
 import (
 	"fmt"
+	"github.com/fatih/color"
+	"os"
 	"os/user"
 	"runtime"
-	"os"
-	"github.com/fatih/color"
 )
 
 func GetThisPlatform() string {
@@ -52,24 +52,26 @@ func getMcDir() string {
 
 func checkForRuntime() {
 	runDir := getMcDir() + "/runtime"
-	if _ , err := os.Stat(runDir); os.IsNotExist(err){
+	if _, err := os.Stat(runDir); os.IsNotExist(err) {
 		color.Red(runDir + ", Not found now creating")
 		os.MkdirAll(runDir, os.ModePerm)
 		color.Green(runDir + ", Has been created")
 	}
 }
 
-func CheckForLauncher()  {
+func CheckForLauncher() {
 	checkForRuntime()
 	jar := getMcDir() + "/launcher.jar"
-	if _ , err := os.Stat(jar); os.IsNotExist(err){
+	if _, err := os.Stat(jar); os.IsNotExist(err) {
 		color.Red(jar + ", Not found now downloading.")
 		DownloadFromUrl("http://launcher.mojang.com/mc-staging/launcher/jar/3613e45482b58d3b5214911365d13afe3e24aa33/launcher.jar.lzma", getMcDir())
 		color.Green(jar + ", Has been dowbloaded.")
+		color.Green("decompressing launcher.jar.lzma")
+		//DecompressLzma(getMcDir()+"/launcher.jar.lzma", getMcDir()+"/launcher.jar")
 	}
 }
 
-func RuntimeDownloader()  {
+func RuntimeDownloader() {
 	path := getMcDir() + "/runtime"
 	darwin := "http://launcher.mojang.com/jre/osx-64/1.8.0_74/241139aa590e2aa139c0f0ede1dc98fdce3e3776/jre-osx-64-1.8.0_74.lzma"
 	win_386 := "http://launcher.mojang.com/jre/win-32/1.8.0_51/9e6a4608c1116ee064d5ec4cabb9410bc4677f3c/jre-win-32-1.8.0_51.lzma"
@@ -77,7 +79,7 @@ func RuntimeDownloader()  {
 	checkForRuntime()
 	switch GetThisPlatform() {
 	case "windows":
-		if GetArch() == "amd64"{
+		if GetArch() == "amd64" {
 			DownloadFromUrl(win_amd64, path)
 		} else if GetArch() == "386" {
 			DownloadFromUrl(win_386, path)
