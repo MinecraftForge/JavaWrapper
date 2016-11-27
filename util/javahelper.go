@@ -39,7 +39,7 @@ func IsJavaInstalled() bool {
 }
 
 func LaunchWithSysJava() {
-	color.Green("ForgeWrapper is now lauching the laucnher")
+	color.Green("ForgeWrapper is now lauching the laucnher with system JRE")
 
 	out, err := exec.Command("java", "-jar", getMcDir()+"/launcher.jar").CombinedOutput()
 
@@ -50,7 +50,7 @@ func LaunchWithSysJava() {
 	println(out)
 }
 
-func RunMojangJava() {
+func LaunchWithMojangJava() {
 	darwinJRE := getMcDir() + "/runtime/bin/java"
 	winJRE := getMcDir() + "/runtime/bin/java.exe"
 	color.Green("Now running the Launcher from Mojang JRE")
@@ -67,12 +67,23 @@ func RunMojangJava() {
 	}
 }
 
-func RunVersionCheck() bool {
+func IsJavaVersionValid() bool {
 	out, _ := exec.Command("java", "-version").CombinedOutput()
 
 	if strings.Contains(string(out), "1.8") {
 		return true
 	} else {
 		return false
+	}
+}
+
+func JreLauncher()  {
+	if IsValidPlatFrom() {
+		CheckForLauncher()
+		if IsJavaVersionValid() {
+			LaunchWithSysJava()
+		} else {
+			LaunchWithMojangJava()
+		}
 	}
 }

@@ -68,7 +68,6 @@ func getMcDir() string {
 	}
 }
 
-//TODO bool check and check from launcher
 func checkForRuntime() {
 	runDir := getMcDir() + "/runtime"
 	if _, err := os.Stat(runDir); os.IsNotExist(err) {

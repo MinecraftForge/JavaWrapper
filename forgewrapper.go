@@ -19,22 +19,20 @@
 package main
 
 import (
-	"fmt"
-	"github.com/fatih/color"
+	col "github.com/fatih/color"
 	"github.com/MinecraftForge/JavaWrapper/util"
 	"os"
 )
 
 func main() {
+
+	col.Green("Platfrom: " + util.GetThisPlatform())
+	col.Green("Arch: " + util.GetArch())
 	if !util.IsValidPlatFrom() {
-		color.Red("The forge wrapper doesn't support %s", util.GetThisPlatform())
+		col.Red("The forge wrapper doesn't support %s", util.GetThisPlatform())
 		os.Exit(1)
 	}
-	util.CheckForLauncher()
-	//util.DecompLauncher()
-	util.LaunchWithSysJava() // Hint it was this line
-	fmt.Println(util.GetArch())
-	fmt.Println(util.IsValidPlatFrom())
-	fmt.Println(util.IsValidArch())
+	util.JreLauncher()
+
 
 }

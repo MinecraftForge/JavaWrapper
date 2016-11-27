@@ -23,13 +23,14 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	//"fmt"
-	//"bufio"
-	//"github.com/ulikunitz/xz/lzma"
+	"fmt"
+	"bufio"
+	"github.com/ulikunitz/xz/lzma"
+	"github.com/fatih/color"
 )
 
 func DecompLauncher() {
-	DecompLzma("launcher.lzma", getMcDir()+"/launcher.jar")
+	DecompLzma(getMcDir() + "/launcher.jar.lzma", getMcDir()+"/launcher.jar")
 }
 
 func DecompJRE() {
@@ -50,18 +51,27 @@ func DecompJRE() {
 
 }
 
-func DecompLzma(file, target string) {
-	//f , err := os.Open(file)
-	//
-	//if err != nil {
-	//	fmt.Println(err)
-	//}
-	//
-	//r , err := lzma.NewReader(bufio.NewReader(f))
-	//
-	//if err != nil {
-	//	fmt.Println(err)
-	//}
+func DecompLzma(arcive, target string) {
+	f , err := os.Open(arcive)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	r , err := lzma.NewReader(bufio.NewReader(f))
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	output, err := os.Create(target)
+
+	if err != nil {
+		color.Red("error %s", err)
+	}
+
+	cop, err := io.Copy(output, r)
+	fmt.Println(cop, "creaded")
 
 }
 
