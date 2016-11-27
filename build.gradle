@@ -9,7 +9,7 @@ golang {
     platforms = System.getProperty("platforms", "windows-amd64,windows-386,darwin-amd64")
     dependencies {
         build 'github.com/fatih/color'
-        build 'github.com/lxq/lzma'
+        build 'github.com/ulikunitz/xz/lzma'
     }
 
     build {
