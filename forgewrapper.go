@@ -21,7 +21,7 @@ package main
 import (
 	"fmt"
 	"github.com/fatih/color"
-	"github.com/illyohs/forgewrapper/util"
+	"github.com/MinecraftForge/JavaWrapper/util"
 	"os"
 )
 
@@ -31,7 +31,7 @@ func main() {
 		os.Exit(1)
 	}
 	util.CheckForLauncher()
-	util.DecompLauncher()
+	//util.DecompLauncher()
 	util.LaunchWithSysJava() // Hint it was this line
 	fmt.Println(util.GetArch())
 	fmt.Println(util.IsValidPlatFrom())
