@@ -19,11 +19,11 @@
 package util
 
 import (
-	"github.com/fatih/color"
-	"os/exec"
-
-	"strings"
 	"os"
+	"os/exec"
+	"strings"
+
+	"github.com/fatih/color"
 )
 
 func IsJavaInstalled() bool {
@@ -51,6 +51,7 @@ func LaunchWithSysJava() {
 }
 
 func LaunchWithMojangJava() {
+	RuntimeDownloader()
 	darwinJRE := getMcDir() + "/runtime/bin/java"
 	winJRE := getMcDir() + "/runtime/bin/java.exe"
 	color.Green("Now running the Launcher from Mojang JRE")
@@ -65,6 +66,7 @@ func LaunchWithMojangJava() {
 			"http://www.oracle.com/technetwork/java/javase/downloads/index.html to download the latest java.")
 		os.Exit(3)
 	}
+
 }
 
 func IsJavaVersionValid() bool {
@@ -77,7 +79,7 @@ func IsJavaVersionValid() bool {
 	}
 }
 
-func JreLauncher()  {
+func JreLauncher() {
 	if IsValidPlatFrom() {
 		CheckForLauncher()
 		if IsJavaVersionValid() {

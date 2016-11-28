@@ -20,17 +20,18 @@ package util
 
 import (
 	"archive/zip"
+	"bufio"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
-	"fmt"
-	"bufio"
-	"github.com/ulikunitz/xz/lzma"
+
 	"github.com/fatih/color"
+	"github.com/ulikunitz/xz/lzma"
 )
 
 func DecompLauncher() {
-	DecompLzma(getMcDir() + "/launcher.jar.lzma", getMcDir()+"/launcher.jar")
+	DecompLzma(getMcDir()+"/launcher.jar.lzma", getMcDir()+"/launcher.jar")
 }
 
 func DecompJRE() {
@@ -47,18 +48,19 @@ func DecompJRE() {
 		}
 	}
 
-	DecompLzma(targetName, getMcDir()+"/runtime/")
+	DecompLzma(getMcDir()+"/runtime/"+targetName, getMcDir()+"/runtime/jre.zip")
+	unzip(getMcDir()+"/runtime/jre.zip", getMcDir()+"/runtime/")
 
 }
 
 func DecompLzma(arcive, target string) {
-	f , err := os.Open(arcive)
+	f, err := os.Open(arcive)
 
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	r , err := lzma.NewReader(bufio.NewReader(f))
+	r, err := lzma.NewReader(bufio.NewReader(f))
 
 	if err != nil {
 		fmt.Println(err)

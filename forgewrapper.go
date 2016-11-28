@@ -19,9 +19,10 @@
 package main
 
 import (
-	col "github.com/fatih/color"
-	"github.com/MinecraftForge/JavaWrapper/util"
 	"os"
+
+	"github.com/MinecraftForge/JavaWrapper/util"
+	col "github.com/fatih/color"
 )
 
 func main() {
@@ -32,7 +33,10 @@ func main() {
 		col.Red("The forge wrapper doesn't support %s", util.GetThisPlatform())
 		os.Exit(1)
 	}
+	// util.CheckForLauncher()
+	// util.RuntimeDownloader()
+	// util.DecompLauncher()
+	// util.DecompJRE()
 	util.JreLauncher()
-
 
 }

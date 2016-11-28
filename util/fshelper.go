@@ -20,10 +20,11 @@ package util
 
 import (
 	"fmt"
-	"github.com/fatih/color"
 	"os"
 	"os/user"
 	"runtime"
+
+	"github.com/fatih/color"
 )
 
 func GetThisPlatform() string {
@@ -76,18 +77,15 @@ func checkForRuntime() {
 		color.Green(runDir + ", Has been created")
 	}
 }
-
-//TODO boolean
 func CheckForLauncher() {
 	checkForRuntime()
 	jar := getMcDir() + "/launcher.jar"
 	if _, err := os.Stat(jar); os.IsNotExist(err) {
 		color.Red(jar + ", Not found now downloading.")
 		DownloadFromUrl("http://launcher.mojang.com/mc-staging/launcher/jar/3613e45482b58d3b5214911365d13afe3e24aa33/launcher.jar.lzma", getMcDir())
-		color.Green(jar + ", Has been dowbloaded.")
+		color.Green(jar + ", Has been downloaded.")
 		color.Green("decompressing launcher.jar.lzma")
-		//DecompressLzma(getMcDir()+"/launcher.jar.lzma", getMcDir()+"/launcher.jar")
-		//DecompFile(getMcDir() +"/launcher.jar.lzma")
+		DecompLauncher()
 	}
 }
 
@@ -110,4 +108,6 @@ func RuntimeDownloader() {
 	case "darwin":
 		DownloadFromUrl(darwin, path)
 	}
+
+	DecompJRE()
 }
