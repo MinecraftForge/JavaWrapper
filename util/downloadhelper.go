@@ -1,4 +1,4 @@
-/*
+/**
  * Minecraft Forge
  * Copyright (c) 2016.
  *
@@ -22,12 +22,12 @@ import (
 	"fmt"
 	"github.com/fatih/color"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
 )
 
-//TODO name files from json
 func DownloadFromUrl(url string, path string) {
 	tokens := strings.Split(url, "/")
 	fileName := tokens[len(tokens)-1]
@@ -54,4 +54,21 @@ func DownloadFromUrl(url string, path string) {
 		return
 	}
 	fmt.Println(n, "bytes downloaded.")
+}
+
+func StringFromWebJson(url string) string {
+
+	response, err := http.Get(url)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	bytes, err := ioutil.ReadAll(response.Body)
+
+	if err != err {
+		fmt.Println(err)
+	}
+
+	return string(bytes)
 }

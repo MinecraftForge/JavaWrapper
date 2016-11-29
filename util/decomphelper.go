@@ -41,9 +41,9 @@ func DecompJRE() {
 	if GetThisPlatform() == "darwin" {
 		targetName = "jre-osx-64-1.8.0_74.lzma"
 	} else if GetThisPlatform() == "windows" {
-		if GetArch() == "amd64" {
+		if GetThisArch() == "amd64" {
 			targetName = "jre-win-64-1.8.0_51.lzma"
-		} else if GetArch() == "386" {
+		} else if GetThisArch() == "386" {
 			targetName = "jre-win-32-1.8.0_51.lzma"
 		}
 	}

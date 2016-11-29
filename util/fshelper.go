@@ -1,4 +1,4 @@
-/*
+/**
  * Minecraft Forge
  * Copyright (c) 2016.
  *
@@ -23,7 +23,6 @@ import (
 	"os"
 	"os/user"
 	"runtime"
-
 	"github.com/fatih/color"
 )
 
@@ -31,7 +30,7 @@ func GetThisPlatform() string {
 	return runtime.GOOS
 }
 
-func GetArch() string {
+func GetThisArch() string {
 	return runtime.GOARCH
 }
 
@@ -44,7 +43,7 @@ func IsValidPlatFrom() bool {
 }
 
 func IsValidArch() bool {
-	if GetArch() == "amd64" || GetArch() == "386" {
+	if GetThisArch() == "amd64" || GetThisArch() == "386" {
 		return true
 	} else {
 		return false
@@ -69,11 +68,18 @@ func getMcDir() string {
 	}
 }
 
+func GetRuntimeJRE() string {
+	return getMcDir() + "/" + GetJREVersion()
+}
+
 func checkForRuntime() {
-	runDir := getMcDir() + "/runtime"
+	ver := GetJREVersion()
+	runDir := getMcDir() + "/runtime/" + ver
 	if _, err := os.Stat(runDir); os.IsNotExist(err) {
-		color.Red(runDir + ", Not found now creating")
+		color.Red(runDir + ", Not found")
+		color.Yellow("Now setting up runtime")
 		os.MkdirAll(runDir, os.ModePerm)
+		runtimeDownloader()
 		color.Green(runDir + ", Has been created")
 	}
 }
@@ -82,32 +88,36 @@ func CheckForLauncher() {
 	jar := getMcDir() + "/launcher.jar"
 	if _, err := os.Stat(jar); os.IsNotExist(err) {
 		color.Red(jar + ", Not found now downloading.")
-		DownloadFromUrl("http://launcher.mojang.com/mc-staging/launcher/jar/3613e45482b58d3b5214911365d13afe3e24aa33/launcher.jar.lzma", getMcDir())
+		DownloadFromUrl(GetLauncherUrl(), getMcDir())
 		color.Green(jar + ", Has been downloaded.")
 		color.Green("decompressing launcher.jar.lzma")
 		DecompLauncher()
 	}
 }
 
-func RuntimeDownloader() {
-	path := getMcDir() + "/runtime"
-	darwin := "http://launcher.mojang.com/jre/osx-64/1.8.0_74/241139aa590e2aa139c0f0ede1dc98fdce3e3776/jre-osx-64-1.8.0_74.lzma"
-	win_386 := "http://launcher.mojang.com/jre/win-32/1.8.0_51/9e6a4608c1116ee064d5ec4cabb9410bc4677f3c/jre-win-32-1.8.0_51.lzma"
-	win_amd64 := "http://launcher.mojang.com/jre/win-64/1.8.0_51/3cb2e56d3f00a8a9fe1ca7e0e74380fdf7556cb0/jre-win-64-1.8.0_51.lzma"
-	checkForRuntime()
-	switch GetThisPlatform() {
-	case "windows":
-		if GetArch() == "amd64" {
-			DownloadFromUrl(win_amd64, path)
-		} else if GetArch() == "386" {
-			DownloadFromUrl(win_386, path)
-		} else {
-			color.Red("UNABLE TO DETERMIN ARCHITECTURE NOW SHUTTING DOWN")
-			os.Exit(2)
-		}
-	case "darwin":
-		DownloadFromUrl(darwin, path)
-	}
+func runtimeDownloader() {
+	platform, arch, version, url := GetJreInfo()
+	path := getMcDir() + "/runtime/" + version
+
+	color.Green("Downloading Jre version %s for %s ", version, platform, arch)
+	DownloadFromUrl(path, url)
+	//darwin := "http://launcher.mojang.com/jre/osx-64/1.8.0_74/241139aa590e2aa139c0f0ede1dc98fdce3e3776/jre-osx-64-1.8.0_74.lzma"
+	//win_386 := "http://launcher.mojang.com/jre/win-32/1.8.0_51/9e6a4608c1116ee064d5ec4cabb9410bc4677f3c/jre-win-32-1.8.0_51.lzma"
+	//win_amd64 := "http://launcher.mojang.com/jre/win-64/1.8.0_51/3cb2e56d3f00a8a9fe1ca7e0e74380fdf7556cb0/jre-win-64-1.8.0_51.lzma"
+	//checkForRuntime()
+	//switch GetThisPlatform() {
+	//case "windows":
+	//	if GetThisArch() == "amd64" {
+	//		DownloadFromUrl(url, path)
+	//	} else if GetThisArch() == "386" {
+	//		DownloadFromUrl(ut, path)
+	//	} else {
+	//		color.Red("UNABLE TO DETERMINE ARCHITECTURE NOW SHUTTING DOWN")
+	//		os.Exit(2)
+	//	}
+	//case "darwin":
+	//	DownloadFromUrl(darwin, path)
+	//}
 
 	DecompJRE()
 }

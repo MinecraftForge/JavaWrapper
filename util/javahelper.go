@@ -1,4 +1,4 @@
-/*
+/**
  * Minecraft Forge
  * Copyright (c) 2016.
  *
@@ -51,9 +51,8 @@ func LaunchWithSysJava() {
 }
 
 func LaunchWithMojangJava() {
-	RuntimeDownloader()
-	darwinJRE := getMcDir() + "/runtime/bin/java"
-	winJRE := getMcDir() + "/runtime/bin/java.exe"
+	darwinJRE := GetRuntimeJRE() + "/runtime/bin/java"
+	winJRE := GetRuntimeJRE() + "/runtime/bin/java.exe"
 	color.Green("Now running the Launcher from Mojang JRE")
 
 	if GetThisPlatform() == "windows" {
@@ -61,9 +60,9 @@ func LaunchWithMojangJava() {
 	} else if GetThisPlatform() == "darwin" {
 		exec.Command(darwinJRE, "-jar", getMcDir()+"/launcher.jar").Run()
 	} else if GetThisPlatform() == "linux" {
-		color.Red("Sorry Mojang has not build a JRE for this platfrom please update to your java " +
-			"go to http://openjdk.java.net/install/ or " +
-			"http://www.oracle.com/technetwork/java/javase/downloads/index.html to download the latest java.")
+		color.Red("Sorry Mojang has not built a JRE for linux please download from go to " +
+			"http://openjdk.java.net/install/ or " +
+			"http://www.oracle.com/technetwork/java/javase/downloads/index.html to download the latest java 8.")
 		os.Exit(3)
 	}
 

@@ -1,4 +1,4 @@
-/*
+/**
  * Minecraft Forge
  * Copyright (c) 2016.
  *
@@ -22,21 +22,21 @@ import (
 	"os"
 
 	"github.com/MinecraftForge/JavaWrapper/util"
-	col "github.com/fatih/color"
+	"github.com/fatih/color"
 )
 
 func main() {
 
-	col.Green("Platfrom: " + util.GetThisPlatform())
-	col.Green("Arch: " + util.GetArch())
+	color.Green("Platfrom: " + util.GetThisPlatform())
+	color.Green("Arch: " + util.GetThisArch())
 	if !util.IsValidPlatFrom() {
-		col.Red("The forge wrapper doesn't support %s", util.GetThisPlatform())
+		color.Red("The forge wrapper doesn't support %s", util.GetThisPlatform())
 		os.Exit(1)
 	}
-	// util.CheckForLauncher()
-	// util.RuntimeDownloader()
-	// util.DecompLauncher()
-	// util.DecompJRE()
-	util.JreLauncher()
+
+	//fmt.Print(util.StringFromWebJson("http://launchermeta.mojang.com/mc-staging/launcher.json"))
+	//util.GetJreInfo()
+	util.GetJREVersion()
+	//util.JreLauncher()
 
 }
