@@ -24,6 +24,7 @@ import (
 	"github.com/fatih/color"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 type LauncherJson struct {
@@ -125,7 +126,7 @@ func GetJreInfo() (string, string, string, string) {
 		os.Exit(3)
 	}
 
-	return platform, arch, version, url
+	return platform, arch, strconv.Itoa(version), url
 }
 
 func GetJREVersion() string {
