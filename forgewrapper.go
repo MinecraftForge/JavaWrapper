@@ -37,6 +37,6 @@ func main() {
 	//fmt.Print(util.StringFromWebJson("http://launchermeta.mojang.com/mc-staging/launcher.json"))
 	//util.GetJreInfo()
 	util.GetJREVersion()
-	//util.JreLauncher()
+	util.JreLauncher()
 
 }

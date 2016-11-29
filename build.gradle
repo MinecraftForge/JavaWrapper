@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'github.com/MinecraftForge/JavaWrapper'
-version '0.0.1'
+version '0.0.1-proof'
 
 golang {
     platforms = System.getProperty("platforms", "windows-amd64,windows-386,darwin-amd64")
@@ -19,3 +19,25 @@ golang {
     }
 
 }
+
+//task prepBinarys() {
+    //dependsOn build
+//
+//    from("${project.buildDir}/out") {
+//	    into("/")
+//        include("${project.name}-windows-386.exe")
+//        rename("${project.name}-windows-386.exe", "flaw32.exe"
+//	}
+//	
+//	from("${project.buildDir}/out") {
+//	    into("/")
+//        include("${project.name}-windows-amd64.exe")
+//        rename("${project.name}-windows-amd64.exe", "flaw64.exe"
+//	}
+//	
+//	from("${project.buildDir}/out") {
+//	    into("/")
+//        include("${project.name}-darwin-amd6")
+//        rename("${project.name}-darwin-amd6", "flaw-osx"
+//	}
+//}
