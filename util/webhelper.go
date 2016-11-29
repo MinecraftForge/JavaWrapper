@@ -21,9 +21,10 @@ package util
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/fatih/color"
 	"fmt"
 	"os"
+
+	"github.com/fatih/color"
 )
 
 type LauncherJson struct {
@@ -81,11 +82,9 @@ type LauncherJson struct {
 	} `json:"windows"`
 }
 
-var ljString = StringFromWebJson("http://launchermeta.mojang.com/mc-staging/launcher.json")
-var buf = bytes.NewBufferString(ljString)
-
 func GetJreInfo() (string, string, string, string) {
-
+	ljString := StringFromWebJson("http://launchermeta.mojang.com/mc-staging/launcher.json")
+	buf := bytes.NewBufferString(ljString)
 	var ljObj LauncherJson
 
 	err := json.NewDecoder(buf).Decode(&ljObj)
@@ -125,7 +124,8 @@ func GetJreInfo() (string, string, string, string) {
 		os.Exit(3)
 	}
 
-	return platform, arch, version, url
+	var ver = strconv(version)
+	return platform, arch, ver, url
 }
 
 func GetJREVersion() string {
@@ -134,6 +134,8 @@ func GetJREVersion() string {
 }
 
 func GetLauncherUrl() string {
+	ljString := StringFromWebJson("http://launchermeta.mojang.com/mc-staging/launcher.json")
+	buf := bytes.NewBufferString(ljString)
 	var ljObj LauncherJson
 
 	err := json.NewDecoder(buf).Decode(&ljObj)

@@ -51,8 +51,8 @@ func LaunchWithSysJava() {
 }
 
 func LaunchWithMojangJava() {
-	darwinJRE := GetRuntimeJRE() + "/runtime/bin/java"
-	winJRE := GetRuntimeJRE() + "/runtime/bin/java.exe"
+	darwinJRE := GetRuntimeJRE() + "/bin/java"
+	winJRE := GetRuntimeJRE() + "/bin/java.exe"
 	color.Green("Now running the Launcher from Mojang JRE")
 
 	if GetThisPlatform() == "windows" {

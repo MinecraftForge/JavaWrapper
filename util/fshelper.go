@@ -23,6 +23,7 @@ import (
 	"os"
 	"os/user"
 	"runtime"
+
 	"github.com/fatih/color"
 )
 
@@ -68,7 +69,7 @@ func getMcDir() string {
 	}
 }
 
-func GetRuntimeJRE() string {
+func getRuntimeJREDir() string {
 	return getMcDir() + "/" + GetJREVersion()
 }
 
@@ -119,5 +120,5 @@ func runtimeDownloader() {
 	//	DownloadFromUrl(darwin, path)
 	//}
 
-	DecompJRE()
+	DecompJRE(version)
 }

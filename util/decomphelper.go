@@ -1,4 +1,4 @@
-/*
+/**
  * Minecraft Forge
  * Copyright (c) 2016.
  *
@@ -34,22 +34,22 @@ func DecompLauncher() {
 	DecompLzma(getMcDir()+"/launcher.jar.lzma", getMcDir()+"/launcher.jar")
 }
 
-func DecompJRE() {
+func DecompJRE(version string) {
 	var targetName string
 
 	//TODO get from json
 	if GetThisPlatform() == "darwin" {
-		targetName = "jre-osx-64-1.8.0_74.lzma"
+		targetName = "jre-osx-64-" + version + ".lzma"
 	} else if GetThisPlatform() == "windows" {
 		if GetThisArch() == "amd64" {
-			targetName = "jre-win-64-1.8.0_51.lzma"
+			targetName = "jre-win-64-" + version + ".lzma"
 		} else if GetThisArch() == "386" {
-			targetName = "jre-win-32-1.8.0_51.lzma"
+			targetName = "jre-win-32-" + version + ".lzma"
 		}
 	}
 
-	DecompLzma(getMcDir()+"/runtime/"+targetName, getMcDir()+"/runtime/jre.zip")
-	unzip(getMcDir()+"/runtime/jre.zip", getMcDir()+"/runtime/")
+	DecompLzma(getRuntimeJREDir()+"/"+targetName, getRuntimeJREDir()+"/jre.zip")
+	unzip(getRuntimeJREDir()+"/jre.zip", getRuntimeJREDir())
 
 }
 
