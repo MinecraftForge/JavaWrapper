@@ -19,6 +19,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/MinecraftForge/JavaWrapper/util"
@@ -36,7 +37,8 @@ func main() {
 
 	//fmt.Print(util.StringFromWebJson("http://launchermeta.mojang.com/mc-staging/launcher.json"))
 	//util.GetJreInfo()
-	util.GetJREVersion()
+	util.IsJavaInstalled()
+	fmt.Println(util.GetJREVersion())
 	util.JreLauncher()
 
 }

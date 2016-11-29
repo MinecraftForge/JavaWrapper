@@ -23,7 +23,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"strconv"
 
 	"github.com/fatih/color"
 )
@@ -124,7 +123,6 @@ func GetJreInfo() (string, string, string, string) {
 			"http://www.oracle.com/technetwork/java/javase/downloads/index.html to download the latest java.")
 		os.Exit(3)
 	}
-
 	return platform, arch, version, url
 
 }

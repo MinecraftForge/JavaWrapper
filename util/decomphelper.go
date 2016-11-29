@@ -47,8 +47,9 @@ func DecompJRE(version string) {
 			targetName = "jre-win-32-" + version + ".lzma"
 		}
 	}
-
+	println(getRuntimeJREDir() + " ----" + targetName)
 	DecompLzma(getRuntimeJREDir()+"/"+targetName, getRuntimeJREDir()+"/jre.zip")
+	// println("test")
 	unzip(getRuntimeJREDir()+"/jre.zip", getRuntimeJREDir())
 
 }

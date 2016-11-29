@@ -20,23 +20,24 @@ package util
 
 import (
 	"fmt"
-	"github.com/fatih/color"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/fatih/color"
 )
 
 func DownloadFromUrl(url string, path string) {
 	tokens := strings.Split(url, "/")
 	fileName := tokens[len(tokens)-1]
 
-	color.Cyan("Downloading %s from %s", fileName, url)
-
+	// color.Cyan("Downloading %s from %s", fileName, url)
 	output, err := os.Create(path + "/" + fileName)
 	if err != nil {
 		color.Red("Error while creating", fileName, "-", err)
+		// panic(err)
 		return
 	}
 	defer output.Close()

@@ -70,12 +70,12 @@ func getMcDir() string {
 }
 
 func getRuntimeJREDir() string {
-	return getMcDir() + "/" + GetJREVersion()
+	return string(getMcDir() + "/runtime/" + GetJREVersion())
 }
 
 func checkForRuntime() {
-	ver := GetJREVersion()
-	runDir := getMcDir() + "/runtime/" + ver
+	// ver := GetJREVersion()
+	runDir := getRuntimeJREDir()
 	if _, err := os.Stat(runDir); os.IsNotExist(err) {
 		color.Red(runDir + ", Not found")
 		color.Yellow("Now setting up runtime")
@@ -100,8 +100,8 @@ func runtimeDownloader() {
 	platform, arch, version, url := GetJreInfo()
 	path := getMcDir() + "/runtime/" + version
 
-	color.Green("Downloading Jre version %s for %s ", version, platform, arch)
-	DownloadFromUrl(path, url)
+	color.Green("Downloading Jre version %s for %s%s", version, platform, arch)
+	DownloadFromUrl(url, path)
 	//darwin := "http://launcher.mojang.com/jre/osx-64/1.8.0_74/241139aa590e2aa139c0f0ede1dc98fdce3e3776/jre-osx-64-1.8.0_74.lzma"
 	//win_386 := "http://launcher.mojang.com/jre/win-32/1.8.0_51/9e6a4608c1116ee064d5ec4cabb9410bc4677f3c/jre-win-32-1.8.0_51.lzma"
 	//win_amd64 := "http://launcher.mojang.com/jre/win-64/1.8.0_51/3cb2e56d3f00a8a9fe1ca7e0e74380fdf7556cb0/jre-win-64-1.8.0_51.lzma"
