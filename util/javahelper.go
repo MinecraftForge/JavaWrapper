@@ -80,6 +80,7 @@ func IsJavaVersionValid() bool {
 
 func JreLauncher() {
 	if IsValidPlatFrom() {
+		checkForMcdir()
 		CheckForLauncher()
 		if IsJavaVersionValid() {
 			LaunchWithSysJava()

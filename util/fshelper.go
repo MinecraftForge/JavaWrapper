@@ -51,6 +51,15 @@ func IsValidArch() bool {
 	}
 }
 
+func checkForMcdir()  {
+	if _, err := os.Stat(getMcDir()); os.IsNotExist(err) {
+		color.Red(getMcDir() + ", Not found")
+		color.Yellow("Now setting up runtime")
+		os.MkdirAll(getMcDir(), os.ModePerm)
+		color.Green(getMcDir() + ", Has been created")
+	}
+}
+
 func getMcDir() string {
 	usr, err := user.Current()
 
