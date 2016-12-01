@@ -28,6 +28,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/ulikunitz/xz/lzma"
+	"os/exec"
 )
 
 func DecompLauncher() {
@@ -49,7 +50,16 @@ func DecompJRE(version string) {
 	}
 	DecompLzma(getRuntimeJREDir()+"/"+targetName, getRuntimeJREDir()+"/jre.zip")
 	// println("test")
-	unzip(getRuntimeJREDir()+"/jre.zip", getRuntimeJREDir())
+
+	//Cant figure out why this doesnt work so problem meet hammer
+	if GetThisPlatform() != "darwin"{
+		unzip(getRuntimeJREDir()+"/jre.zip", getRuntimeJREDir())
+	} else {
+		_, err := exec.Command("ditto", "-xk", targetName, getRuntimeJREDir()).CombinedOutput()
+		if err != nil {
+			color.Red("problem unziping " + targetName + "%", err)
+		}
+	}
 
 }
 
