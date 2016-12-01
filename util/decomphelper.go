@@ -78,7 +78,7 @@ func DecompLzma(archive, target string) {
 
 }
 
-//Taken from https://gist.github.com/svett/424e6784facc0ba907ae#file-extract-go
+//Taken & modified from https://gist.github.com/svett/424e6784facc0ba907ae#file-extract-go
 func unzip(archive, target string) error {
 	reader, err := zip.OpenReader(archive)
 
@@ -88,7 +88,7 @@ func unzip(archive, target string) error {
 
 	defer  reader.Close()
 
-	if err := os.MkdirAll(target, 0755); err != nil {
+	if err := os.MkdirAll(target, 0777); err != nil {
 		return err
 	}
 
