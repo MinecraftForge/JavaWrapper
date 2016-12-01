@@ -80,10 +80,10 @@ func IsJavaVersionValid() bool {
 
 func JreLauncher() {
 	if IsValidPlatFrom() {
-		CheckForLauncher()
 		if IsJavaVersionValid() {
 			LaunchWithSysJava()
 		} else {
+			CheckForLauncher()
 			LaunchWithMojangJava()
 		}
 	}
