@@ -26,6 +26,9 @@ import (
 	"github.com/fatih/color"
 )
 
+const installerVersion = "@VERSION@"
+
+
 func IsJavaInstalled() bool {
 	jv, err := exec.LookPath("java")
 
@@ -36,6 +39,25 @@ func IsJavaInstalled() bool {
 		color.Green("Java has been found at: %s", jv)
 		return true
 	}
+}
+
+//I'm going to need a CI for this one
+func InstallForge()  {
+	var url = "http://files.minecraftforge.net/maven/net/minecraftforge/forge/"+ installerVersion +
+		"/forge-" + installerVersion + "-installer.jar"
+	color.Green("Downloading forge")
+	DownloadFromUrl(url, getMcDir())
+	color.Yellow("Running forge " +installerVersion + "-installer.jar")
+	_, err := exec.Command("java", "-jar", getMcDir() + "/forge-" +installerVersion + "-installer.jar").CombinedOutput()
+
+	if err != nil {
+		color.Red("There was a problem running the installer %s", err)
+	}
+
+	color.Yellow("removing installer")
+	os.Remove(getMcDir() +"/forge-" + installerVersion + "-installer.jar")
+	os.Remove(getMcDir() +"/forge-" + installerVersion + "-installer.jar.log")
+
 }
 
 func LaunchWithSysJava() {
@@ -88,5 +110,14 @@ func JreLauncher() {
 			checkForRuntime()
 			LaunchWithMojangJava()
 		}
+	}
+}
+
+func ModedLauncher()  {
+	if installerVersion != "@VERSION@" {
+		checkForMcdir()
+		InstallForge()
+	} else {
+		JreLauncher()
 	}
 }

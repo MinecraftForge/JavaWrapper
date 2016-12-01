@@ -55,7 +55,7 @@ func DecompJRE(version string) {
 	if GetThisPlatform() != "darwin"{
 		unzip(getRuntimeJREDir()+"/jre.zip", getRuntimeJREDir())
 	} else {
-		_, err := exec.Command("ditto", "-xk", targetName, getRuntimeJREDir()).CombinedOutput()
+		_, err := exec.Command("ditto", "-xk", getRuntimeJREDir() + "/jre.zip", getRuntimeJREDir()).CombinedOutput()
 		if err != nil {
 			color.Red("problem unziping " + targetName + "%s", err)
 		}
