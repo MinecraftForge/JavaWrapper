@@ -53,8 +53,8 @@ func DecompJRE(version string) {
 
 }
 
-func DecompLzma(arcive, target string) {
-	f, err := os.Open(arcive)
+func DecompLzma(archive, target string) {
+	f, err := os.Open(archive)
 
 	if err != nil {
 		fmt.Println(err)
@@ -74,15 +74,19 @@ func DecompLzma(arcive, target string) {
 
 	cop, err := io.Copy(output, r)
 	fmt.Println(cop, "creaded")
+	os.Remove(archive)
 
 }
 
 //Taken from https://gist.github.com/svett/424e6784facc0ba907ae#file-extract-go
 func unzip(archive, target string) error {
 	reader, err := zip.OpenReader(archive)
+
 	if err != nil {
 		return err
 	}
+
+	defer  reader.Close()
 
 	if err := os.MkdirAll(target, 0755); err != nil {
 		return err
@@ -99,18 +103,22 @@ func unzip(archive, target string) error {
 		if err != nil {
 			return err
 		}
-		defer fileReader.Close()
 
 		targetFile, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.Mode())
 		if err != nil {
+			fileReader.Close()
 			return err
 		}
-		defer targetFile.Close()
 
 		if _, err := io.Copy(targetFile, fileReader); err != nil {
+			fileReader.Close()
+			targetFile.Close()
 			return err
 		}
+
+		fileReader.Close()
+		targetFile.Close()
 	}
 
-	return nil
+	return os.Remove(archive)
 }
