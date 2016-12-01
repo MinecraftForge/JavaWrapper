@@ -57,7 +57,7 @@ func DecompJRE(version string) {
 	} else {
 		_, err := exec.Command("ditto", "-xk", targetName, getRuntimeJREDir()).CombinedOutput()
 		if err != nil {
-			color.Red("problem unziping " + targetName + "%", err)
+			color.Red("problem unziping " + targetName + "%s", err)
 		}
 	}
 
