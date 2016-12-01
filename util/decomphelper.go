@@ -52,12 +52,12 @@ func DecompJRE(version string) {
 	// println("test")
 
 	//Cant figure out why this doesnt work so problem meet hammer
-	if GetThisPlatform() != "darwin"{
+	if GetThisPlatform() != "darwin" {
 		unzip(getRuntimeJREDir()+"/jre.zip", getRuntimeJREDir())
 	} else {
-		_, err := exec.Command("ditto", "-xk", getRuntimeJREDir() + "/jre.zip", getRuntimeJREDir()).CombinedOutput()
+		_, err := exec.Command("ditto", "-xk", getRuntimeJREDir()+"/jre.zip", getRuntimeJREDir()).CombinedOutput()
 		if err != nil {
-			color.Red("problem unziping " + targetName + "%s", err)
+			color.Red("problem unziping "+targetName+"%s", err)
 		}
 	}
 
@@ -96,7 +96,7 @@ func unzip(archive, target string) error {
 		return err
 	}
 
-	defer  reader.Close()
+	defer reader.Close()
 
 	if err := os.MkdirAll(target, 0777); err != nil {
 		return err

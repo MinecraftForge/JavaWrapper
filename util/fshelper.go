@@ -51,7 +51,7 @@ func IsValidArch() bool {
 	}
 }
 
-func checkForMcdir()  {
+func checkForMcdir() {
 	if _, err := os.Stat(getMcDir()); os.IsNotExist(err) {
 		color.Red(getMcDir() + ", Not found")
 		color.Yellow("Now setting up runtime")
@@ -76,6 +76,11 @@ func getMcDir() string {
 	} else {
 		return home + "/.minecraft"
 	}
+}
+
+//I'm going to need a gradle task for this for this one
+func InstallerVersion() string {
+	return "@VERSION@"
 }
 
 func getRuntimeJREDir() string {

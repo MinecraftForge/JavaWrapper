@@ -26,9 +26,6 @@ import (
 	"github.com/fatih/color"
 )
 
-const installerVersion = "@VERSION@"
-
-
 func IsJavaInstalled() bool {
 	jv, err := exec.LookPath("java")
 
@@ -41,22 +38,22 @@ func IsJavaInstalled() bool {
 	}
 }
 
-//I'm going to need a CI for this one
-func InstallForge()  {
-	var url = "http://files.minecraftforge.net/maven/net/minecraftforge/forge/"+ installerVersion +
-		"/forge-" + installerVersion + "-installer.jar"
+
+func InstallForge() {
+	var url = "http://files.minecraftforge.net/maven/net/minecraftforge/forge/" + InstallerVersion() +
+		"/forge-" + InstallerVersion() + "-installer.jar"
 	color.Green("Downloading forge")
 	DownloadFromUrl(url, getMcDir())
-	color.Yellow("Running forge " +installerVersion + "-installer.jar")
-	_, err := exec.Command("java", "-jar", getMcDir() + "/forge-" +installerVersion + "-installer.jar").CombinedOutput()
+	color.Yellow("Running forge " + InstallerVersion() + "-installer.jar")
+	_, err := exec.Command("java", "-jar", getMcDir()+"/forge-"+InstallerVersion()+"-installer.jar").CombinedOutput()
 
 	if err != nil {
 		color.Red("There was a problem running the installer %s", err)
 	}
 
 	color.Yellow("removing installer")
-	os.Remove(getMcDir() +"/forge-" + installerVersion + "-installer.jar")
-	os.Remove(getMcDir() +"/forge-" + installerVersion + "-installer.jar.log")
+	os.Remove(getMcDir() + "/forge-" + InstallerVersion() + "-installer.jar")
+	os.Remove(getMcDir() + "/forge-" + InstallerVersion() + "-installer.jar.log")
 
 }
 
@@ -113,8 +110,8 @@ func JreLauncher() {
 	}
 }
 
-func ModedLauncher()  {
-	if installerVersion != "@VERSION@" {
+func ModedLauncher() {
+	if InstallerVersion() != "@VERSION@" {
 		checkForMcdir()
 		InstallForge()
 	} else {
