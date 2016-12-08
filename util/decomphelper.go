@@ -24,11 +24,11 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
 
 	"github.com/fatih/color"
 	"github.com/ulikunitz/xz/lzma"
-	"os/exec"
 )
 
 func DecompLauncher() {
@@ -52,13 +52,16 @@ func DecompJRE(version string) {
 	// println("test")
 
 	//Cant figure out why this doesnt work so problem meet hammer
-	if GetThisPlatform() != "darwin" {
+	if GetThisPlatform() == "windows" {
 		unzip(getRuntimeJREDir()+"/jre.zip", getRuntimeJREDir())
 	} else {
-		_, err := exec.Command("ditto", "-xk", getRuntimeJREDir()+"/jre.zip", getRuntimeJREDir()).CombinedOutput()
+		//	_, err := exec.Command("ditto", "-xk", getRuntimeJREDir()+"/jre.zip", getRuntimeJREDir()).CombinedOutput()
+		unzip(getRuntimeJREDir()+"/jre.zip", getRuntimeJREDir())
+		out, err := exec.Command("chmod", "-R", "+x", getRuntimeJREDir()).CombinedOutput()
 		if err != nil {
 			color.Red("problem unziping "+targetName+"%s", err)
 		}
+		println("%s", out)
 	}
 
 }
