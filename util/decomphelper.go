@@ -1,3 +1,5 @@
+package util
+
 /**
  * Minecraft Forge
  * Copyright (c) 2016.
@@ -16,25 +18,32 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package util
 
 import (
 	"archive/zip"
 	"bufio"
 	"fmt"
 	"io"
+	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
+
+	"golang.org/x/tools/godoc/vfs"
+
+	"bitbucket.org/mjl/asset"
 
 	"github.com/fatih/color"
 	"github.com/ulikunitz/xz/lzma"
 )
 
+//Decompiles the Launcher
 func DecompLauncher() {
 	DecompLzma(getMcDir()+"/launcher.jar.lzma", getMcDir()+"/launcher.jar")
 }
 
+//Decompile the JRE
 func DecompJRE(version string) {
 	var targetName string
 
@@ -66,6 +75,7 @@ func DecompJRE(version string) {
 
 }
 
+//Decompile a LZMA file
 func DecompLzma(archive, target string) {
 	f, err := os.Open(archive)
 
@@ -85,7 +95,7 @@ func DecompLzma(archive, target string) {
 		color.Red("error %s", err)
 	}
 
-	cop, err := io.Copy(output, r)
+	cop, _ := io.Copy(output, r)
 	fmt.Println(cop, "creaded")
 	os.Remove(archive)
 
@@ -134,4 +144,25 @@ func unzip(archive, target string) error {
 	}
 
 	return os.Remove(archive)
+}
+
+func checkBinaryForZip(binary, target string) bool {
+
+	fs := asset.Fs()
+	if err := asset.Error(); err != nil {
+		log.Println(err)
+		fs = vfs.OS(".")
+	}
+
+	f, err := fs.Open("/" + binary)
+
+	if err != nil {
+		return false
+	} else {
+		defer f.Close()
+		zd, _ := ioutil.ReadAll(f)
+		os.Stdout.Write(zd)
+		color.Green("Extracting %s into %s", binary, target)
+		return true
+	}
 }
