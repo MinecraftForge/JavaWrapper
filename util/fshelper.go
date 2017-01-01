@@ -1,4 +1,6 @@
-/**
+package util
+
+/*
  * Minecraft Forge
  * Copyright (c) 2016.
  *
@@ -16,7 +18,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package util
 
 import (
 	"fmt"
@@ -31,9 +32,7 @@ func GetThisPlatform() string {
 	return runtime.GOOS
 }
 
-func GetThisArch() string {
-	return runtime.GOARCH
-}
+func GetThisArch() string { return runtime.GOARCH }
 
 func IsValidPlatFrom() bool {
 	if GetThisPlatform() == "windows" || GetThisPlatform() == "darwin" || GetThisPlatform() == "linux" {
@@ -54,7 +53,7 @@ func IsValidArch() bool {
 func checkForMcdir() {
 	if _, err := os.Stat(getMcDir()); os.IsNotExist(err) {
 		color.Red(getMcDir() + ", Not found")
-		color.Yellow("Now setting up runtime")
+		color.Yellow("Creating Mc directory")
 		os.MkdirAll(getMcDir(), os.ModePerm)
 		color.Green(getMcDir() + ", Has been created")
 	}
@@ -78,9 +77,21 @@ func getMcDir() string {
 	}
 }
 
-//I'm going to need a gradle task for this for this one
-func InstallerVersion() string {
-	return "@VERSION@"
+func getInstallerDir() string {
+	checkForMcdir()
+	if _, err := os.Stat(getMcDir() + "installer"); os.IsNotExist(err) {
+		color.Yellow("Creating temporary install directory")
+		os.MkdirAll(getMcDir()+"/installer", os.ModePerm)
+		color.Green(getMcDir() + "/installer, Has been created")
+	}
+	return getMcDir() + "/installer"
+
+}
+
+func cleanUpInstallDir() {
+	if e := os.RemoveAll(getMcDir() + "/installer"); e != nil {
+		fmt.Println(e)
+	}
 }
 
 func getRuntimeJREDir() string {

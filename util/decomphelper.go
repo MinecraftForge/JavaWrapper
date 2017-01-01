@@ -1,6 +1,6 @@
 package util
 
-/**
+/*
  * Minecraft Forge
  * Copyright (c) 2016.
  *
@@ -25,7 +25,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -64,7 +63,6 @@ func DecompJRE(version string) {
 	if GetThisPlatform() == "windows" {
 		unzip(getRuntimeJREDir()+"/jre.zip", getRuntimeJREDir())
 	} else {
-		//	_, err := exec.Command("ditto", "-xk", getRuntimeJREDir()+"/jre.zip", getRuntimeJREDir()).CombinedOutput()
 		unzip(getRuntimeJREDir()+"/jre.zip", getRuntimeJREDir())
 		out, err := exec.Command("chmod", "-R", "+x", getRuntimeJREDir()).CombinedOutput()
 		if err != nil {
@@ -101,6 +99,7 @@ func DecompLzma(archive, target string) {
 
 }
 
+//Replace with gozip?
 //Taken & modified from https://gist.github.com/svett/424e6784facc0ba907ae#file-extract-go
 func unzip(archive, target string) error {
 	reader, err := zip.OpenReader(archive)
@@ -146,23 +145,41 @@ func unzip(archive, target string) error {
 	return os.Remove(archive)
 }
 
-func checkBinaryForZip(binary, target string) bool {
+func containsZip(binary string) bool {
+
+	fs := asset.Fs()
+
+	if err := asset.Error(); err != nil {
+		color.Red("error finding files system trying to recover %s", err)
+		fs = vfs.OS(".")
+	}
+
+	f, err := fs.Open("/" + binary)
+	f.Close()
+
+	if err != nil {
+		return false
+	} else {
+		return true
+	}
+}
+
+func extractZipFromBinary(binary, target string) {
 
 	fs := asset.Fs()
 	if err := asset.Error(); err != nil {
-		log.Println(err)
+		color.Red("error finding files system trying to recover %s", err)
 		fs = vfs.OS(".")
 	}
 
 	f, err := fs.Open("/" + binary)
 
 	if err != nil {
-		return false
-	} else {
-		defer f.Close()
-		zd, _ := ioutil.ReadAll(f)
-		os.Stdout.Write(zd)
-		color.Green("Extracting %s into %s", binary, target)
-		return true
+		color.Red("unabled to find binary %s", err)
 	}
+
+	defer f.Close()
+	zd, _ := ioutil.ReadAll(f)
+	os.Stdout.Write(zd)
+	color.Green("Extracting %s into %s", binary, target)
 }

@@ -1,3 +1,5 @@
+package main
+
 /**
  * Minecraft Forge
  * Copyright (c) 2016.
@@ -16,7 +18,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package main
 
 import (
 	"os"
@@ -37,6 +38,7 @@ func main() {
 	//fmt.Print(util.StringFromWebJson("http://launchermeta.mojang.com/mc-staging/launcher.json"))
 	//util.GetJreInfo()
 	util.IsJavaInstalled()
-	util.ModedLauncher()
+	util.LaunchJar()
+	//	util.ModedLauncher()
 
 }
