@@ -5,9 +5,9 @@
 echo "Building JavaWrapper"
 go build
 echo "zipping install directory"
-zip -r0 installer.zip ./installer
+zip  installer.zip installer
 echo "appending the wrapper"
-cat JavaWrapper >> installer.zip
+cat installer.zip JavaWrapper
 echo "Moving JavaWrapper to a test direcory"
 mkdir test
 mv JavaWrapper test/JavaWrapper

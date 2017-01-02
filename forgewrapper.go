@@ -35,10 +35,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	//fmt.Print(util.StringFromWebJson("http://launchermeta.mojang.com/mc-staging/launcher.json"))
-	//util.GetJreInfo()
 	util.IsJavaInstalled()
-	util.LaunchJar()
-	//	util.ModedLauncher()
+	util.ModedLauncher()
 
 }

@@ -2,8 +2,10 @@
 *.iml
 build
 vendor
+test
 .gradle
 
+*.zip
 *.exe
 
 JavaWrapper

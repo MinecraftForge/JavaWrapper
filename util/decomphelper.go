@@ -155,11 +155,12 @@ func containsZip(binary string) bool {
 	}
 
 	f, err := fs.Open("/" + binary)
-	f.Close()
+	//	f.Close()
 
 	if err != nil {
 		return false
 	} else {
+		f.Close()
 		return true
 	}
 }

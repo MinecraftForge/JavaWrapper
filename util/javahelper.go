@@ -1,4 +1,6 @@
-/**
+package util
+
+/*
  * Minecraft Forge
  * Copyright (c) 2016.
  *
@@ -16,7 +18,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package util
 
 import (
 	"os"
@@ -36,19 +37,6 @@ func IsJavaInstalled() bool {
 		color.Green("Java has been found at: %s", jv)
 		return true
 	}
-}
-
-func InstallForge() {
-
-	dir, err := os.Open(getInstallerDir())
-
-	if err != nil {
-		color.Red("There was a problem finding the installer directory %s", err)
-	}
-
-	extractZipFromBinary("installer", dir.Name())
-	color.Yellow("removing installer")
-
 }
 
 /*
@@ -140,6 +128,19 @@ func IsJavaVersionValid() bool {
 	}
 }
 
+func InstallForge() {
+
+	dir, err := os.Open(getInstallerDir())
+
+	if err != nil {
+		color.Red("There was a problem finding the installer directory %s", err)
+	}
+
+	extractZipFromBinary("installer", dir.Name())
+	color.Yellow("removing installer")
+
+}
+
 func LaunchJar() {
 
 	if IsValidPlatFrom() {
@@ -172,6 +173,6 @@ func ModedLauncher() {
 		checkForMcdir()
 		InstallForge()
 	} else {
-		JreLauncher()
+		LaunchJar()
 	}
 }
