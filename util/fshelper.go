@@ -77,23 +77,6 @@ func getMcDir() string {
 	}
 }
 
-func getInstallerDir() string {
-	checkForMcdir()
-	if _, err := os.Stat(getMcDir() + "installer"); os.IsNotExist(err) {
-		color.Yellow("Creating temporary install directory")
-		os.MkdirAll(getMcDir()+"/installer", os.ModePerm)
-		color.Green(getMcDir() + "/installer, Has been created")
-	}
-	return getMcDir() + "/installer"
-
-}
-
-func cleanUpInstallDir() {
-	if e := os.RemoveAll(getMcDir() + "/installer"); e != nil {
-		fmt.Println(e)
-	}
-}
-
 func getRuntimeJREDir() string {
 	return string(getMcDir() + "/runtime/" + GetJREVersion())
 }

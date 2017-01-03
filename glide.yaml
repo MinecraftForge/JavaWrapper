@@ -1,6 +1,5 @@
 package: github.com/MinecraftForge/JavaWrapper
 import:
-- package: bitbucket.org/mjl/asset
 - package: github.com/fatih/color
   version: ~1.1.0
 - package: github.com/ulikunitz/xz

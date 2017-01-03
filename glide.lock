@@ -1,10 +1,10 @@
-hash: 4b69898f54c1317cb0e11c6c84200fc740276c5265ba25f1bc52c0061d83bcad
-updated: 2017-01-02T16:26:42.902312684-05:00
+hash: 2cbd92e08ec04aa4713c83e236a2a5d31cfd44c728810472857a698efffa56f4
+updated: 2017-01-03T16:11:23.908944123-05:00
 imports:
-- name: bitbucket.org/mjl/asset
-  version: 164c4db554c4f06cb705f3f3f5c91bc1bd02bc6a
 - name: github.com/fatih/color
   version: dea9d3a26a087187530244679c1cfb3a42937794
+- name: github.com/kardianos/osext
+  version: c2c54e542fb797ad986b31721e1baedf214ca413
 - name: github.com/mattn/go-colorable
   version: d228849504861217f796da67fae4f6e347643f15
 - name: github.com/mattn/go-isatty
@@ -23,5 +23,4 @@ imports:
   version: 908849c3379245f71612058fbf92cf6bf58c3c75
   subpackages:
   - godoc/vfs
-  - godoc/vfs/zipfs
 testImports: []

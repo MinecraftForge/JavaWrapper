@@ -120,10 +120,10 @@ func IsJavaVersionValid() bool {
 func Wrapper(jar string) ([]byte, error) {
 
 	if IsJavaInstalled() {
-		out, err := GenericSysJavaLauncher(getMcDir() + "/" + jar)
+		out, err := GenericSysJavaLauncher(jar)
 		return out, err
 	} else {
-		out, err := GenericMojangJavaLauncher(getMcDir() + "/" + jar)
+		out, err := GenericMojangJavaLauncher(jar)
 		return out, err
 	}
 }
@@ -144,7 +144,7 @@ func ModedLauncher() {
 	if err != nil {
 		println("Now launching in laucnher mode")
 		CheckForLauncher()
-		nout, nerr := Wrapper("launcher.jar")
+		nout, nerr := Wrapper(getMcDir() + "/launcher.jar")
 		if nerr != nil {
 
 			print(nerr)
