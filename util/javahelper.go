@@ -25,6 +25,7 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
+	"github.com/kardianos/osext"
 )
 
 func IsJavaInstalled() bool {
@@ -45,15 +46,17 @@ func IsJavaInstalled() bool {
  * args: the jar args
  *
  */
-func GenericSysJavaLauncher(target string) {
-	color.Yellow("Forge wrapper is now launching %s", target)
+func GenericSysJavaLauncher(target string) ([]byte, error) {
+	// color.Yellow("Forge wrapper is now launching %s", target)
 	out, err := exec.Command("java", "-jar", target).CombinedOutput()
 
 	if err != nil {
-		panic(err)
+		println(err)
+		// panic(err)
 	}
 
-	println(out)
+	return out, err
+
 }
 
 /*
@@ -62,7 +65,7 @@ func GenericSysJavaLauncher(target string) {
  * args: the jar args
  *
  */
-func GenericMojangJavaLauncher(target string) {
+func GenericMojangJavaLauncher(target string) ([]byte, error) {
 
 	checkForRuntime()
 
@@ -70,49 +73,35 @@ func GenericMojangJavaLauncher(target string) {
 	winJRE := getRuntimeJREDir() + "/bin/java.exe"
 	color.Yellow("Now running the Launcher from Mojang JRE")
 
-	if GetThisPlatform() == "windows" {
-		exec.Command(winJRE, "-jar", target).Run()
-	} else if GetThisPlatform() == "darwin" {
-		exec.Command(darwinJRE, "-jar", target).Run()
-	} else if GetThisPlatform() == "linux" {
+	// if GetThisPlatform() == "windows" {
+	// 	// exec.Command(winJRE, "-jar", target).Run()
+	// 	out, err := exec.Command(winJRE, "-jar", target).CombinedOutput()
+	// 	return out, err
+	// } else if GetThisPlatform() == "darwin" {
+	// 	// exec.Command(darwinJRE, "-jar", target).Run()
+	// 	out, err := exec.Command(darwinJRE, "-jar", target).CombinedOutput()
+	// 	return out, err
+	// } else if GetThisPlatform() == "linux" {
+	// 	color.Red("Sorry Mojang has not built a JRE for linux please download from go to " +
+	// 		"http://openjdk.java.net/install/ or " +
+	// 		"http://www.oracle.com/technetwork/java/javase/downloads/index.html to download the latest java 8.")
+	// 	os.Exit(3)
+	// }
+
+	switch GetThisPlatform() {
+	case "windows":
+		out, err := exec.Command(winJRE, "-jar", target).CombinedOutput()
+		return out, err
+	case "darwin":
+		out, err := exec.Command(darwinJRE, "-jar", target).CombinedOutput()
+		return out, err
+	case "linux":
 		color.Red("Sorry Mojang has not built a JRE for linux please download from go to " +
 			"http://openjdk.java.net/install/ or " +
 			"http://www.oracle.com/technetwork/java/javase/downloads/index.html to download the latest java 8.")
 		os.Exit(3)
 	}
-
-}
-
-//TODO: Remove
-func LaunchWithSysJava() {
-	color.Yellow("ForgeWrapper is now lauching the laucnher with system JRE")
-
-	out, err := exec.Command("java", "-jar", getMcDir()+"/launcher.jar").CombinedOutput()
-
-	if err != nil {
-		println(err)
-	}
-
-	println(out)
-}
-
-//TODO: remove
-func LaunchWithMojangJava() {
-	darwinJRE := getRuntimeJREDir() + "/bin/java"
-	winJRE := getRuntimeJREDir() + "/bin/java.exe"
-	color.Yellow("Now running the Launcher from Mojang JRE")
-
-	if GetThisPlatform() == "windows" {
-		exec.Command(winJRE, "-jar", getMcDir()+"/launcher.jar").Run()
-	} else if GetThisPlatform() == "darwin" {
-		exec.Command(darwinJRE, "-jar", getMcDir()+"/launcher.jar").Run()
-	} else if GetThisPlatform() == "linux" {
-		color.Red("Sorry Mojang has not built a JRE for linux please download from go to " +
-			"http://openjdk.java.net/install/ or " +
-			"http://www.oracle.com/technetwork/java/javase/downloads/index.html to download the latest java 8.")
-		os.Exit(3)
-	}
-
+	return nil, nil
 }
 
 /*
@@ -128,51 +117,42 @@ func IsJavaVersionValid() bool {
 	}
 }
 
-func InstallForge() {
+func Wrapper(jar string) ([]byte, error) {
 
-	dir, err := os.Open(getInstallerDir())
+	if IsJavaInstalled() {
+		out, err := GenericSysJavaLauncher(getMcDir() + "/" + jar)
+		return out, err
+	} else {
+		out, err := GenericMojangJavaLauncher(getMcDir() + "/" + jar)
+		return out, err
+	}
+}
+
+/*
+ * Launches either the wrapper or an appended jar
+ */
+func ModedLauncher() {
+	binName, _ := osext.Executable()
+
+	CheckForLauncher()
+	out, err := Wrapper(binName)
+
+	// if err != nil {
+	// 	println(err)
+	// }
 
 	if err != nil {
-		color.Red("There was a problem finding the installer directory %s", err)
-	}
-
-	extractZipFromBinary("installer", dir.Name())
-	color.Yellow("removing installer")
-
-}
-
-func LaunchJar() {
-
-	if IsValidPlatFrom() {
-		checkForMcdir()
+		println("Now launching in laucnher mode")
 		CheckForLauncher()
-		if IsJavaVersionValid() {
-			GenericSysJavaLauncher(getMcDir() + "/launcher.jar")
-		} else {
-			GenericMojangJavaLauncher(getMcDir() + "/launcher.jar")
+		nout, nerr := Wrapper("launcher.jar")
+		if nerr != nil {
+
+			print(nerr)
 		}
+		print(string(nout))
 
 	}
-}
 
-func JreLauncher() {
-	if IsValidPlatFrom() {
-		checkForMcdir()
-		CheckForLauncher()
-		if IsJavaVersionValid() {
-			LaunchWithSysJava()
-		} else {
-			checkForRuntime()
-			LaunchWithMojangJava()
-		}
-	}
-}
+	print(string(out))
 
-func ModedLauncher() {
-	if containsZip("installer") {
-		checkForMcdir()
-		InstallForge()
-	} else {
-		LaunchJar()
-	}
 }

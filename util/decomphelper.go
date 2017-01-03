@@ -24,14 +24,9 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
-
-	"golang.org/x/tools/godoc/vfs"
-
-	"bitbucket.org/mjl/asset"
 
 	"github.com/fatih/color"
 	"github.com/ulikunitz/xz/lzma"
@@ -143,44 +138,4 @@ func unzip(archive, target string) error {
 	}
 
 	return os.Remove(archive)
-}
-
-func containsZip(binary string) bool {
-
-	fs := asset.Fs()
-
-	if err := asset.Error(); err != nil {
-		color.Red("error finding files system trying to recover %s", err)
-		fs = vfs.OS(".")
-	}
-
-	f, err := fs.Open("/" + binary)
-	//	f.Close()
-
-	if err != nil {
-		return false
-	} else {
-		f.Close()
-		return true
-	}
-}
-
-func extractZipFromBinary(binary, target string) {
-
-	fs := asset.Fs()
-	if err := asset.Error(); err != nil {
-		color.Red("error finding files system trying to recover %s", err)
-		fs = vfs.OS(".")
-	}
-
-	f, err := fs.Open("/" + binary)
-
-	if err != nil {
-		color.Red("unabled to find binary %s", err)
-	}
-
-	defer f.Close()
-	zd, _ := ioutil.ReadAll(f)
-	os.Stdout.Write(zd)
-	color.Green("Extracting %s into %s", binary, target)
 }

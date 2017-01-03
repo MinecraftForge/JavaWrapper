@@ -110,6 +110,7 @@ func checkForRuntime() {
 	}
 }
 func CheckForLauncher() {
+	checkForMcdir()
 	jar := getMcDir() + "/launcher.jar"
 	if _, err := os.Stat(jar); os.IsNotExist(err) {
 		color.Red(jar + ", Not found now downloading.")

@@ -1,6 +1,6 @@
 package main
 
-/**
+/*
  * Minecraft Forge
  * Copyright (c) 2016.
  *
@@ -35,7 +35,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	util.IsJavaInstalled()
 	util.ModedLauncher()
 
 }

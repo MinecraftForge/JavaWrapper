@@ -1,0 +1,27 @@
+hash: 4b69898f54c1317cb0e11c6c84200fc740276c5265ba25f1bc52c0061d83bcad
+updated: 2017-01-02T16:26:42.902312684-05:00
+imports:
+- name: bitbucket.org/mjl/asset
+  version: 164c4db554c4f06cb705f3f3f5c91bc1bd02bc6a
+- name: github.com/fatih/color
+  version: dea9d3a26a087187530244679c1cfb3a42937794
+- name: github.com/mattn/go-colorable
+  version: d228849504861217f796da67fae4f6e347643f15
+- name: github.com/mattn/go-isatty
+  version: 30a891c33c7cde7b02a981314b4228ec99380cca
+- name: github.com/ulikunitz/xz
+  version: 76f94b7c69c6f84be96bcfc2443042b198689565
+  subpackages:
+  - internal/hash
+  - internal/xlog
+  - lzma
+- name: golang.org/x/sys
+  version: d75a52659825e75fff6158388dddc6a5b04f9ba5
+  subpackages:
+  - unix
+- name: golang.org/x/tools
+  version: 908849c3379245f71612058fbf92cf6bf58c3c75
+  subpackages:
+  - godoc/vfs
+  - godoc/vfs/zipfs
+testImports: []
