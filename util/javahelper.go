@@ -151,8 +151,9 @@ func ModedLauncher() {
 		}
 		print(string(nout))
 
+	} else {
+		color.Yellow("Launching in Installer mode")
 	}
-	color.Yellow("Launching in Installer mode")
 
 	print(string(out))
 
