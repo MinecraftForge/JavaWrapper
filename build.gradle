@@ -9,7 +9,7 @@ golang {
     dependencies {
         build 'github.com/fatih/color'
         build 'github.com/ulikunitz/xz/lzma'
-        build 'github.com/kardianos/osext/'
+        build 'github.com/kardianos/osext'
     }
 
     build {
