@@ -142,7 +142,7 @@ func ModedLauncher() {
 	// }
 
 	if err != nil {
-		println("Now launching in laucnher mode")
+		color.Yellow("Now launching in launcher mode")
 		CheckForLauncher()
 		nout, nerr := Wrapper(getMcDir() + "/launcher.jar")
 		if nerr != nil {
@@ -152,6 +152,7 @@ func ModedLauncher() {
 		print(string(nout))
 
 	}
+	color.Yellow("Launching in Installer mode")
 
 	print(string(out))
 

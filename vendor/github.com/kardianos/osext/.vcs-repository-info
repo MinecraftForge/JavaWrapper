@@ -1,0 +1,8 @@
+{
+  "creator": "org.echocat.gradle.plugins.golang 0.1.11-SNAPSHOT",
+  "type": "git",
+  "id": "github.com/kardianos/osext",
+  "uri": "https://github.com/kardianos/osext.git",
+  "fullRef": "c2c54e542fb797ad986b31721e1baedf214ca413",
+  "lastUpdatedMillis": 1483481946475
+}
