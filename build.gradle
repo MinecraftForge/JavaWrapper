@@ -1,5 +1,5 @@
 plugins {
-  id 'org.echocat.golang' version '0.1.12'
+  id 'org.echocat.golang' version '0.1.13'
 }
 
 group 'github.com/MinecraftForge/JavaWrapper'
