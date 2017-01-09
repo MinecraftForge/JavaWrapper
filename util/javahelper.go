@@ -73,21 +73,6 @@ func GenericMojangJavaLauncher(target string) ([]byte, error) {
 	winJRE := getRuntimeJREDir() + "/bin/java.exe"
 	color.Yellow("Now running the Launcher from Mojang JRE")
 
-	// if GetThisPlatform() == "windows" {
-	// 	// exec.Command(winJRE, "-jar", target).Run()
-	// 	out, err := exec.Command(winJRE, "-jar", target).CombinedOutput()
-	// 	return out, err
-	// } else if GetThisPlatform() == "darwin" {
-	// 	// exec.Command(darwinJRE, "-jar", target).Run()
-	// 	out, err := exec.Command(darwinJRE, "-jar", target).CombinedOutput()
-	// 	return out, err
-	// } else if GetThisPlatform() == "linux" {
-	// 	color.Red("Sorry Mojang has not built a JRE for linux please download from go to " +
-	// 		"http://openjdk.java.net/install/ or " +
-	// 		"http://www.oracle.com/technetwork/java/javase/downloads/index.html to download the latest java 8.")
-	// 	os.Exit(3)
-	// }
-
 	switch GetThisPlatform() {
 	case "windows":
 		out, err := exec.Command(winJRE, "-jar", target).CombinedOutput()

@@ -28,7 +28,7 @@ import (
 	"github.com/fatih/color"
 )
 
-type LauncherJson struct {
+type launcherJSON struct {
 	Java struct {
 		Lzma struct {
 			Sha1 string `json:"sha1"`
@@ -86,7 +86,7 @@ type LauncherJson struct {
 func GetJreInfo() (string, string, string, string) {
 	ljString := StringFromWebJson("http://launchermeta.mojang.com/mc-staging/launcher.json")
 	buf := bytes.NewBufferString(ljString)
-	var ljObj LauncherJson
+	var ljObj launcherJSON
 
 	err := json.NewDecoder(buf).Decode(&ljObj)
 	if err != nil {
@@ -101,11 +101,11 @@ func GetJreInfo() (string, string, string, string) {
 	switch GetThisPlatform() {
 	case "windows":
 		platform = "windows"
-		if GetThisArch() == "amd64" {
+		if GetSysArch() == "64" {
 			arch = "64"
 			version = ljObj.Windows.Arch64.Jre.Version
 			url = ljObj.Windows.Arch64.Jre.URL
-		} else if GetThisArch() == "386" {
+		} else if GetSysArch() == "32" {
 			arch = "32"
 			version = ljObj.Windows.Arch32.Jre.Version
 			url = ljObj.Windows.Arch32.Jre.URL
@@ -136,7 +136,7 @@ func GetJREVersion() string {
 func GetLauncherUrl() string {
 	ljString := StringFromWebJson("http://launchermeta.mojang.com/mc-staging/launcher.json")
 	buf := bytes.NewBufferString(ljString)
-	var ljObj LauncherJson
+	var ljObj launcherJSON
 
 	err := json.NewDecoder(buf).Decode(&ljObj)
 	if err != nil {

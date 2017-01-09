@@ -22,8 +22,10 @@ package util
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"os/user"
 	"runtime"
+	"strings"
 
 	"github.com/fatih/color"
 )
@@ -31,8 +33,6 @@ import (
 func GetThisPlatform() string {
 	return runtime.GOOS
 }
-
-func GetThisArch() string { return runtime.GOARCH }
 
 func IsValidPlatFrom() bool {
 	if GetThisPlatform() == "windows" || GetThisPlatform() == "darwin" || GetThisPlatform() == "linux" {
@@ -42,8 +42,43 @@ func IsValidPlatFrom() bool {
 	}
 }
 
+func getArchWindows() string {
+	out, _ := exec.Command("wmic", "os", "get", "osarchitecture").CombinedOutput()
+
+	if strings.Contains(string(out), "32-bit") {
+		return "32"
+	} else if strings.Contains(string(out), "64-bit") {
+		return "64"
+	}
+	return ""
+}
+
+func getArchLinux() string {
+	out, _ := exec.Command("uname", "-a").CombinedOutput()
+
+	if strings.Contains(string(out), "i386") || strings.Contains(string(out), "i868") {
+		return "32"
+	} else if strings.Contains(string(out), "x86_64") {
+		return "64"
+	}
+	return ""
+}
+
+func GetSysArch() string {
+
+	switch runtime.GOOS {
+	case "windows":
+		return getArchWindows()
+	case "linux":
+		return getArchLinux()
+	case "darwin":
+		return "64"
+	}
+	return ""
+}
+
 func IsValidArch() bool {
-	if GetThisArch() == "amd64" || GetThisArch() == "386" {
+	if GetSysArch() == "64" || GetSysArch() == "32" {
 		return true
 	} else {
 		return false
@@ -92,6 +127,7 @@ func checkForRuntime() {
 		color.Green(runDir + ", Has been created")
 	}
 }
+
 func CheckForLauncher() {
 	checkForMcdir()
 	jar := getMcDir() + "/launcher.jar"

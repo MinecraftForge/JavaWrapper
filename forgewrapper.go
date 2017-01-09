@@ -29,7 +29,7 @@ import (
 func main() {
 
 	color.Green("Platfrom: " + util.GetThisPlatform())
-	color.Green("Arch: " + util.GetThisArch())
+	color.Green("Arch: " + util.GetSysArch())
 	if !util.IsValidPlatFrom() {
 		color.Red("The forge wrapper doesn't support %s", util.GetThisPlatform())
 		os.Exit(1)
