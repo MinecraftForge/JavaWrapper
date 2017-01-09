@@ -48,6 +48,7 @@ func IsJavaInstalled() bool {
  */
 func GenericSysJavaLauncher(target string) ([]byte, error) {
 	// color.Yellow("Forge wrapper is now launching %s", target)
+	color.Yellow("Now running from System JRE")
 	out, err := exec.Command("java", "-jar", target).CombinedOutput()
 
 	if err != nil {
@@ -71,7 +72,7 @@ func GenericMojangJavaLauncher(target string) ([]byte, error) {
 
 	darwinJRE := getRuntimeJREDir() + "/bin/java"
 	winJRE := getRuntimeJREDir() + "/bin/java.exe"
-	color.Yellow("Now running the Launcher from Mojang JRE")
+	color.Yellow("Now running from Mojang JRE")
 
 	switch GetThisPlatform() {
 	case "windows":
@@ -104,7 +105,7 @@ func IsJavaVersionValid() bool {
 
 func Wrapper(jar string) ([]byte, error) {
 
-	if IsJavaInstalled() {
+	if IsJavaVersionValid() {
 		out, err := GenericSysJavaLauncher(jar)
 		return out, err
 	} else {
@@ -120,11 +121,7 @@ func ModedLauncher() {
 	binName, _ := osext.Executable()
 
 	CheckForLauncher()
-	out, err := Wrapper(binName)
-
-	// if err != nil {
-	// 	println(err)
-	// }
+	_, err := Wrapper(binName)
 
 	if err != nil {
 		color.Yellow("Now launching in launcher mode")
@@ -140,6 +137,5 @@ func ModedLauncher() {
 		color.Yellow("Launching in Installer mode")
 	}
 
-	print(string(out))
 
 }
