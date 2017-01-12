@@ -1,21 +1,48 @@
 plugins {
-  id 'org.echocat.golang' version '0.1.13'
+	id 'org.echocat.golang' version '0.1.13'
 }
 
 group 'github.com/MinecraftForge/JavaWrapper'
 version = project.version
 golang {
-    platforms = System.getProperty("platforms", project.platforms)
-    dependencies {
-        build 'github.com/fatih/color'
-        build 'github.com/ulikunitz/xz/lzma'
-        build 'github.com/kardianos/osext'
-    }
+	platforms = System.getProperty("platforms", project.platforms)
+	dependencies {
+		build 'github.com/fatih/color'
+        	build 'github.com/ulikunitz/xz/lzma'
+        	build 'github.com/kardianos/osext'		
+	}
+	
+	build {
+		useTemporaryGopath = true
+		excludes = ['.git/**', 'build.gradle', 'build/**', '.gradle/**', 'gradle/**']
+		outputFilenamePattern = "build/out/" + project.name+ "-" + project.version+ "-%{platform}%{extension}"
+	}
 
-    build {
-        useTemporaryGopath = true
-        excludes = ['.git/**', 'build.gradle', 'build/**', '.gradle/**', 'gradle/**']
-        outputFilenamePattern = "build/out/" + project.name+ "-" + project.version+ "-%{platform}%{extension}"
-    }
+}
 
+//Create MacApp directory
+task createAppDir {
+	doLast {
+		mkdir('build/osxwrapper-' + project.version + '.app')
+	}
+}
+
+//Copy the Template into
+task copyTemplate(dependsOn: createAppDir, type: Copy) {
+	into 'build'
+	//from 'macbundle'
+	into ('osxwrapper-v' + project.version + '.app') {
+		from 'appTemplate'
+	}
+}
+
+//ReplaceTokens
+task replaceTokens(dependsOn: copyTemplate) {
+	file('build/osxwrapper-' + project.version + '.app/Contents/Info.plist').replaceAll('@NAME@', project.name)
+	file('build/osxwrapper-' + project.version + '.app/Contents/Info.plist').replaceAll('@VERSION@', project.version)
+	file('build/osxwrapper-' + project.version + '.app/Contents/Info.plist').replaceAll('@EXE@', 'JavaWrapper-v' + project.version + '-osx')
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '3.3'
 }
