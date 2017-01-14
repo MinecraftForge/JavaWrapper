@@ -15,33 +15,20 @@ golang {
 	build {
 		useTemporaryGopath = true
 		excludes = ['.git/**', 'build.gradle', 'build/**', '.gradle/**', 'gradle/**']
-		outputFilenamePattern = "build/out/" + project.name+ "-" + project.version+ "-%{platform}%{extension}"
+		outputFilenamePattern = "build/out/" + project.name+ "-" + project.version+ "-%{platform}"
 	}
 
 }
 
-//Create MacApp directory
-task createAppDir {
-	doLast {
-		mkdir('build/osxwrapper-' + project.version + '.app')
-	}
+/**
+ * Removed till I can figure out a san way to do this
+task packageApp(type: Tar, dependsOn:["build"]) {
+	onlyIf = { golang.parsedPlatforms.contains(Platform.DARWIN_AMD64) }
+	comp = Compression.GZIP
+	baseName = project.name
+	appendex = 'darwin
 }
-
-//Copy the Template into
-task copyTemplate(dependsOn: createAppDir, type: Copy) {
-	into 'build'
-	//from 'macbundle'
-	into ('osxwrapper-v' + project.version + '.app') {
-		from 'appTemplate'
-	}
-}
-
-//ReplaceTokens
-task replaceTokens(dependsOn: copyTemplate) {
-	file('build/osxwrapper-' + project.version + '.app/Contents/Info.plist').replaceAll('@NAME@', project.name)
-	file('build/osxwrapper-' + project.version + '.app/Contents/Info.plist').replaceAll('@VERSION@', project.version)
-	file('build/osxwrapper-' + project.version + '.app/Contents/Info.plist').replaceAll('@EXE@', 'JavaWrapper-v' + project.version + '-osx')
-}
+*/
 
 task wrapper(type: Wrapper) {
 	gradleVersion = '3.3'
