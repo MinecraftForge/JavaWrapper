@@ -6,6 +6,9 @@ VERSION=$(MAJOR).$(MINOR).$(PATCH)
 BUILD=$(BUILD_NUMBER)
 BIN_DIR=build/$(VERSION)
 APP_DIR=$(BIN_DIR)/FPL.app
+REMOTE_USER=
+HOST=
+TARGET_DIR=
 
 clean: 
 	rm -rf build
@@ -39,3 +42,6 @@ linux:
 	tar -zcvf $(BIN_DIR)/FPL_Linux-$(VERSION).$(BUILD).tar.gz  $(BIN_DIR)/$(NAME)_Linux-$(VERSION).$(BUILD)
 
 all: bindir windows osx linux
+
+deploy: all
+	scp -r $(BIN_DIR) $(REMOTE_USER)@$(HOST):$(TARGET_DIR)
