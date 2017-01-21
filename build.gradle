@@ -2,34 +2,75 @@ plugins {
 	id 'org.echocat.golang' version '0.1.13'
 }
 
-group 'github.com/MinecraftForge/JavaWrapper'
 version = project.version
 golang {
 	platforms = System.getProperty("platforms", project.platforms)
+
+        packageName = project.grp
+
 	dependencies {
 		build 'github.com/fatih/color'
         	build 'github.com/ulikunitz/xz/lzma'
-        	build 'github.com/kardianos/osext'		
+        	build 'github.com/kardianos/osext'
+
+		//Hack to fix the build
+		deleteAllCachedDependenciesOnClean = true
+
 	}
-	
+
 	build {
+
+		excludes = [
+			'.git/**',
+			'build.gradle',
+			'build/**',
+			'.gradle/**',
+			'gradle/**'
+		]
+
 		useTemporaryGopath = true
-		excludes = ['.git/**', 'build.gradle', 'build/**', '.gradle/**', 'gradle/**']
-		outputFilenamePattern = "build/out/" + project.name+ "-" + project.version+ "-%{platform}"
+		//Manully change the output directory it will out b
+		outputFilenamePattern = '../out/' + project.binname + '-v' + project.version + '-%{platform}%{extension}'
 	}
 
 }
 
-/**
- * Removed till I can figure out a san way to do this
-task packageApp(type: Tar, dependsOn:["build"]) {
-	onlyIf = { golang.parsedPlatforms.contains(Platform.DARWIN_AMD64) }
-	comp = Compression.GZIP
-	baseName = project.name
-	appendex = 'darwin
+task pkgWin(type: Zip, dependsOn: ["build"]) {
+	from("${buildDir}/out/")
+	include "*.exe"
+	archiveName "windows-v${project.version}.zip"
+	destinationDir file("${buildDir}/pkg")
 }
-*/
+
+task pkgLinux(type: Tar, dependsOn: ["build"]) {
+	from("${buildDir}/out/")
+	include "${project.binname}-v${project.version}-linux-amd64"
+	archiveName "Linux-v${project.version}.tar.gz"
+	compression = Compression.GZIP	
+	destinationDir file("${buildDir}/pkg")
+}
+
+task pkgOsx(type: Tar, dependsOn: ["build"]) {
+	from("${buildDir}/out/")
+	include "${project.binname}-v${project.version}-darwin-amd64"
+	archiveName "Osx-v${project.version}.tar.gz"
+	compression = Compression.GZIP	
+	destinationDir file("${buildDir}/pkg")
+}
+
 
 task wrapper(type: Wrapper) {
 	gradleVersion = '3.3'
 }
+
+//Create a Genertic Java Wrapper
+//task createGJW(type: Copy, dependsOn:["build"]) {
+//
+//	//Create wrapper
+//	file("${buildDir}/gjwrapper/v" + project.version).mkdirs()
+//
+//	//Copy Files into the gjw dir
+//	from "${buildDir}/out"
+//	into "${buildDir}/gjwrapper/v" + project.version
+//	include "."
+//}

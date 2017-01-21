@@ -1,8 +1,0 @@
-{
-  "creator": "org.echocat.gradle.plugins.golang 0.1.11-SNAPSHOT",
-  "type": "git",
-  "id": "github.com/fatih/color",
-  "uri": "https://github.com/fatih/color.git",
-  "fullRef": "34e4ee095d12986a2cef5ddb9aeb3b8cfcfea17c",
-  "lastUpdatedMillis": 1483485431146
-}

@@ -82,9 +82,9 @@ func GenericMojangJavaLauncher(target string) ([]byte, error) {
 		out, err := exec.Command(darwinJRE, "-jar", target).CombinedOutput()
 		return out, err
 	case "linux":
-		color.Red("Sorry Mojang has not built a JRE for linux please download from go to " +
+		color.Red("Sorry Mojang does not currently distribute a JRE for linux please download a JRE from" +
 			"http://openjdk.java.net/install/ or " +
-			"http://www.oracle.com/technetwork/java/javase/downloads/index.html to download the latest java 8.")
+			"http://www.oracle.com/technetwork/java/javase/downloads/index.html")
 		os.Exit(3)
 	}
 	return nil, nil
@@ -134,8 +134,7 @@ func ModedLauncher() {
 		print(string(nout))
 
 	} else {
-		color.Yellow("Launching in Installer mode")
+		color.Yellow("Launching in Generic Jar Wrapper mode")
 	}
-
 
 }
