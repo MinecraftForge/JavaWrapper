@@ -3,7 +3,7 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath 'io.github.illyohs.binaryappender:BinaryAppender:1.0.1'
+		classpath 'io.github.illyohs.binaryappender:BinaryAppender:1.0.2'
 	}
 }
 
@@ -74,12 +74,14 @@ task wrapper(type: Wrapper) {
 	gradleVersion = '3.3'
 }
 
-
-import io.github.illyohs.binaryappender.BinaryAppender
-task makeGJW(type: Copy) {
+task prepGJW(type: Copy) {
 	mkdir("${buildDir}/gjw/")	
 	from "${buildDir}/out/"
 	into "${buildDir}/gjw"
+}
+
+import io.github.illyohs.binaryappender.BinaryAppender
+task makeGJW(dependsOn: ["prepGJW"] ) {
 
 	def dirJar = new File(project.appendjar)
 
@@ -87,10 +89,12 @@ task makeGJW(type: Copy) {
 	def dirLinux = new File("${buildDir}/gjw/ForgePreloader-v1.0.0-linux-386")
 	def dirWindows = new File("${buildDir}/gjw/ForgePreloader-v1.0.0-windows-386.exe")
 
-	String jr = project.appendjar;
-	String osxd = "${buildDir}/gjw/${project.binname}-v${project.version}-v1.0.0-linux-386";
-
-	BinaryAppender.appendBinary(jr, osxd)
+	File jr = new File("forge-1.11-13.19.1.2199-installer.jar");
+	File linuxd = new File("./build/gjw/${project.binname}-v${project.version}-v1.0.0-linux-38e");
+	
+	doLast {
+	BinaryAppender.appendBinary(jr, linuxd)
+	}
 	//BinaryAppender.appendBinary(dirJar, dirLinux)
 	//BinaryAppender.appendBinary(dirJar, dirWindows)
 
