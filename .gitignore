@@ -4,6 +4,7 @@ build
 test
 .gradle
 
+*.jar
 *.zip
 *.exe
 vendor

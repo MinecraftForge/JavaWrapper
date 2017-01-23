@@ -1,3 +1,12 @@
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath 'io.github.illyohs.binaryappender:BinaryAppender:1.0.1'
+	}
+}
+
 plugins {
 	id 'org.echocat.golang' version '0.1.13'
 }
@@ -10,8 +19,8 @@ golang {
 
 	dependencies {
 		build 'github.com/fatih/color'
-        	build 'github.com/ulikunitz/xz/lzma'
-        	build 'github.com/kardianos/osext'
+		build 'github.com/ulikunitz/xz/lzma'
+		build 'github.com/kardianos/osext'
 
 		//Hack to fix the build
 		deleteAllCachedDependenciesOnClean = true
@@ -50,6 +59,8 @@ task pkgLinux(type: Tar, dependsOn: ["build"]) {
 	destinationDir file("${buildDir}/pkg")
 }
 
+
+
 task pkgOsx(type: Tar, dependsOn: ["build"]) {
 	from("${buildDir}/out/")
 	include "${project.binname}-v${project.version}-darwin-amd64"
@@ -61,6 +72,28 @@ task pkgOsx(type: Tar, dependsOn: ["build"]) {
 
 task wrapper(type: Wrapper) {
 	gradleVersion = '3.3'
+}
+
+
+import io.github.illyohs.binaryappender.BinaryAppender
+task makeGJW(type: Copy) {
+	mkdir("${buildDir}/gjw/")	
+	from "${buildDir}/out/"
+	into "${buildDir}/gjw"
+
+	def dirJar = new File(project.appendjar)
+
+	def dirOsx = new File("${buildDir}/gjw/ForgePreloader-v1.0.0-darwin-amd6")
+	def dirLinux = new File("${buildDir}/gjw/ForgePreloader-v1.0.0-linux-386")
+	def dirWindows = new File("${buildDir}/gjw/ForgePreloader-v1.0.0-windows-386.exe")
+
+	String jr = project.appendjar;
+	String osxd = "${buildDir}/gjw/${project.binname}-v${project.version}-v1.0.0-linux-386";
+
+	BinaryAppender.appendBinary(jr, osxd)
+	//BinaryAppender.appendBinary(dirJar, dirLinux)
+	//BinaryAppender.appendBinary(dirJar, dirWindows)
+
 }
 
 //Create a Genertic Java Wrapper
