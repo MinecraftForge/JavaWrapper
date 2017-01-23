@@ -84,20 +84,23 @@ import org.apache.commons.io.IOUtils;
 import java.io.FileInputStream
 import java.io.FileOutputStream
 ext.appendbin = { infile, outfile  ->
-	println infile
-	println outfile
-	def fis = new FileInputStream(infile);
-	def out = new FileOutputStream(outfile, true);
-	out.write(IOUtils.toByteArray(fis));
-	out.close();
+
+		def fis = new FileInputStream(infile);
+		def out = new FileOutputStream(outfile, true);
+		out.write(IOUtils.toByteArray(fis));
+		out.close();
 
 }
 
+
+//Create generic wrapper
 task makeGJW(dependsOn: ["prepGJW"] ) {
 
-	File jr = new File("forge-1.11-13.19.1.2199-installer.jar");
-	File linuxd = new File("./build/gjw/${project.binname}-v${project.version}-v1.0.0-linux-386");
+	def jr = file("forge-1.11-13.19.1.2199-installer.jar");
+	def li = file("build/gjw/${project.binname}-v${project.version}-linux-386");
 
-	appendbin(jr, linuxd)
+	println jr.exists()
+	println li.exists()
+	appendbin(jr, li)
 
 }
