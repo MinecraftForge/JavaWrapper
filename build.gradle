@@ -1,118 +1,194 @@
-buildscript {
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath 'commons-io:commons-io:2.5'
-	}
-}
-
 plugins {
-	id 'org.echocat.golang' version '0.1.13'
+    id 'org.echocat.golang' version '0.1.13'
 }
 
 version = project.version
+group 'github.com/MinecraftForge/JavaWrapper'
 golang {
-	platforms = System.getProperty("platforms", project.platforms)
+    platforms = System.getProperty("platforms", project.platforms)
 
-        packageName = project.grp
+    // packageName = project.name
 
-	dependencies {
-		build 'github.com/fatih/color'
-		build 'github.com/ulikunitz/xz/lzma'
-		build 'github.com/kardianos/osext'
+    dependencies {
+        build 'github.com/fatih/color'
+        build 'github.com/ulikunitz/xz/lzma'
+        build 'github.com/kardianos/osext'
 
-		//Hack to fix the build
-		deleteAllCachedDependenciesOnClean = true
+        //Hack to fix the build
+        deleteAllCachedDependenciesOnClean = true
+    }
 
-	}
+    build {
+        excludes = [
+            '.git/**',
+            'build.gradle',
+            'build/**',
+            '.gradle/**',
+            'gradle/**'
+        ]
 
-	build {
-
-		excludes = [
-			'.git/**',
-			'build.gradle',
-			'build/**',
-			'.gradle/**',
-			'gradle/**'
-		]
-
-		useTemporaryGopath = true
-		//Manully change the output directory it will out b
-		outputFilenamePattern = '../out/' + project.binname + '-v' + project.version + '-%{platform}%{extension}'
-	}
-
+        useTemporaryGopath = true
+        //Manully change the output directory it will out b
+        outputFilenamePattern = "../out/$project.binname-v$project.version-%{platform}%{extension}"
+    }
 }
 
-task pkgWin(type: Zip, dependsOn: ["build"]) {
-	from("${buildDir}/out/")
-	include "*.exe"
-	archiveName "windows-v${project.version}.zip"
-	destinationDir file("${buildDir}/pkg")
+if (System.getenv('INSTALLER_VERSION')) {
+	project.ext.fversion = "${System.getenv('INSTALLER_VERSION')}"
+	} else {
+	project.ext.fversion = "1.11-13.19.1.2199"
 }
 
-task pkgLinux(type: Tar, dependsOn: ["build"]) {
-	from("${buildDir}/out/")
-	include "${project.binname}-v${project.version}-linux-386"
-	archiveName "Linux-v${project.version}.tar.gz"
-	compression = Compression.GZIP	
-	destinationDir file("${buildDir}/pkg")
+task downloadForge(type: Download) {
+	src = "http://files.minecraftforge.net/maven/net/minecraftforge/forge/${project.ext.fversion}/forge-${project.ext.fversion}-installer.jar"
+	hash = 'sha1'
 }
 
-
-
-task pkgOsx(type: Tar, dependsOn: ["build"]) {
-	from("${buildDir}/out/")
-	include "${project.binname}-v${project.version}-darwin-amd64"
-	archiveName "Osx-v${project.version}.tar.gz"
-	compression = Compression.GZIP	
-	destinationDir file("${buildDir}/pkg")
+def baseInclude = "${project.binname}-v${project.version}"
+task pkgWindows(type: Zip) {
+	 dependsOn baseBuild
+   	 baseName = 'Windows'
+   	 version = project.version
+   	 destinationDir file("${buildDir}/pkg")
+   	 from "$buildDir/out/"
+   	 include '*.exe'
 }
 
+task pkgOsx(type: Tar) {
+	 dependsOn baseBuild
+   	 baseName = 'Osx'
+   	 version = project.version
+   	 extension = 'tar.gz'
+   	 destinationDir file("${buildDir}/pkg")
+   	 compression = Compression.GZIP
+   	 from "$buildDir/out/"
+   	 include "$baseInclude-darwin-amd64"
+}
+
+task pkgLinux(type: Tar) {
+	 dependsOn baseBuild
+   	 baseName = 'Linux'
+   	 version = project.version
+   	 extension = 'tar.gz'
+   	 destinationDir file("${buildDir}/pkg")
+   	 compression = Compression.GZIP
+   	 from "$buildDir/out/"
+   	 include "$baseInclude-linux-386"
+}
+
+task installerWin(type: Installer){
+	 dependsOn pkgWindows
+   	 from zipTree(pkgWindows.outputs.files.singleFile)
+   	 into file("${buildDir}/pkg/")
+   	 rename "forge-installer-${project.ext.fversion}-win.exe"
+}
+
+task installerOsx(type: Installer) {
+	 dependsOn pkgOsx
+   	 from tarTree(resources.gzip(pkgOsx.outputs.files.singleFile))
+   	 into file("${buildDir}/pkg/")
+   	 rename "forge-installer-${project.ext.fversion}-osx"
+}
+
+task installerLinux(type: Installer) {
+	dependsOn pkgLinux
+    	from tarTree(resources.gzip(pkgLinux.outputs.files.singleFile))
+    	into file("${buildDir}/pkg/")
+    	rename "forge-installer-${project.ext.fversion}-linux"
+}
+
+task pkgNormal() {
+	dependsOn pkgLinux, pkgOsx, pkgWindows
+	description 'Creates the installers for each platform'
+}
+
+task installer {
+	dependsOn installerLinux, installerOsx, installerWin
+	description 'Creates the installers for each platform'
+}
 
 task wrapper(type: Wrapper) {
 	gradleVersion = '3.3'
 }
 
-task prepGJW(type: Copy) {
-	mkdir("${buildDir}/gjw/")	
-	from "${buildDir}/out/"
-	into "${buildDir}/gjw"
+class Installer extends Copy {
+
+	def filename
+	{
+		outputs.upToDateWhen {false}
+       		dependsOn project.tasks.downloadForge
+		doLast {
+            		// append to the end of the binary
+			def file = new File(this.outputs.files.singleFile, filename)
+			file << project.tasks.downloadForge.outputs.files.singleFile.bytes
+		}
+	}
+	
+	def rename(str) {
+		rename('.*', str)
+		filename = str
+	}
 }
 
-//Create generic wrapper
-task makeGJW(dependsOn: ["prepGJW"] ) {
 
-	def jr = file("forge-1.11-13.19.1.2199-installer.jar");
-	def li = file("build/gjw/${project.binname}-v${project.version}-linux-386");
+class Download extends DefaultTask {
 
-	println jr.exists()
-	println li.exists()
-	appendbin(jr, li)
+	@Input
+    	def src
+    	@Input
+    	def hash
+    	@Input
+    	def dest = temporaryDir
+    	@OutputFile
+    	def outputFile
 
-}
-
-
-import org.apache.commons.io.IOUtils
-import java.io.FileOutputStream
-import java.io.FileInputStream
-import java.io.FileNotFoundException
-import java.io.IOException
-void appendbin(File infile, File outfile)
-{
-	println "InFile: "  + infile.getName() + " Path: " + infile.getCanonicalPath()
-	println "OutFile: " + outfile.getName() +" Path: " + outfile.getCanonicalPath()
-
-	try {
-		FileInputStream fis = new FileInputStream(infile);
-		FileOutputStream out = new FileOutputStream(outfile, true);
-		out.write(IOUtils.toByteArray(fis));
-		out.close();
-
-	} catch (FileNotFoundException e) {
-		e.printStackTrace();
-	} catch (IOException e) {
-		e.printStackTrace();
+	def setSrc(src) {
+		this.src = src
+		this.outputFile = new File(dest, fileName)
+	}
+	
+	def setDest(File file) {
+		this.dest = file
+		this.outputFile = new File(dest, fileName)
 	}
 
+	def setHash(hash) {
+		this.hash = hash
+	}
+	
+	def getFileName() {
+		return getName(this.src)
+	}
+
+	@TaskAction
+	public void downloadFile() {
+		def file = this.outputFile
+		file.bytes = new URL(src).bytes
+		
+		if (hash) {
+			def remoteHash = new URL(src + '.' + hash).text
+
+            		def digest = java.security.MessageDigest.getInstance(hash)
+            		file.eachByte(4095) {buffer, length ->
+            			digest.update(buffer, 0, length)
+            		}
+            		def localHash = new BigInteger(1, digest.digest()).toString(16).padLeft(32, '0')
+            		
+            		if (localHash != remoteHash) {
+            			throw new GradleException("File hash failed. Expected $remoteHash, but got $localHash")
+            		}
+        	}
+		
+	}
+
+	private static String getName(String filename) {
+        if (filename == null) {
+            return null;
+        }
+		def lastUnixPos = filename.lastIndexOf('/');
+        	def lastWindowsPos = filename.lastIndexOf('\\');
+        	def index = Math.max(lastUnixPos, lastWindowsPos);
+
+        	return filename.substring(index + 1);
+	}
 }
