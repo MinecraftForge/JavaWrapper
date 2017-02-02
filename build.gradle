@@ -1,36 +1,35 @@
 plugins {
-    id 'org.echocat.golang' version '0.1.13'
+	id 'org.echocat.golang' version '0.1.13'
 }
 
 version = project.version
 group 'github.com/MinecraftForge/JavaWrapper'
 golang {
-    platforms = System.getProperty("platforms", project.platforms)
+	platforms = System.getProperty("platforms", project.platforms)
 
-    // packageName = project.name
+	// packageName = project.name
+	dependencies {
+		build 'github.com/fatih/color'
+        	build 'github.com/ulikunitz/xz/lzma'
+		build 'github.com/kardianos/osext'
 
-    dependencies {
-        build 'github.com/fatih/color'
-        build 'github.com/ulikunitz/xz/lzma'
-        build 'github.com/kardianos/osext'
+	//Hack to fix the build
+	deleteAllCachedDependenciesOnClean = true
+	}
 
-        //Hack to fix the build
-        deleteAllCachedDependenciesOnClean = true
-    }
+	build {
+		excludes = [
+			'.git/**',
+			'build.gradle',
+			'build/**',
+			'.gradle/**',
+			'gradle/**'
+		]
 
-    build {
-        excludes = [
-            '.git/**',
-            'build.gradle',
-            'build/**',
-            '.gradle/**',
-            'gradle/**'
-        ]
-
-        useTemporaryGopath = true
-        //Manully change the output directory it will out b
-        outputFilenamePattern = "../out/$project.binname-v$project.version-%{platform}%{extension}"
-    }
+	useTemporaryGopath = true
+	//Manully change the output directory it will out b
+	outputFilenamePattern = "../out/$project.binname-v$project.version-%{platform}%{extension}"
+	}
 }
 
 if (System.getenv('INSTALLER_VERSION')) {
@@ -46,12 +45,12 @@ task downloadForge(type: Download) {
 
 def baseInclude = "${project.binname}-v${project.version}"
 task pkgWindows(type: Zip) {
-	 dependsOn baseBuild
-   	 baseName = 'Windows'
-   	 version = project.version
-   	 destinationDir file("${buildDir}/pkg")
-   	 from "$buildDir/out/"
-   	 include '*.exe'
+	dependsOn baseBuild
+   	baseName = 'Windows'
+   	version = project.version
+   	destinationDir file("${buildDir}/pkg")
+   	from "$buildDir/out/"
+	include '*.exe'
 }
 
 task pkgOsx(type: Tar) {
@@ -97,13 +96,47 @@ task installerLinux(type: Installer) {
     	rename "forge-installer-${project.ext.fversion}-linux"
 }
 
+
+task pkgWindowsInstaller(type: Zip) {
+	dependsOn installerWin
+   	baseName = 'Windows-Installer'
+   	version = project.ext.fversion
+   	destinationDir file("${buildDir}/inst")
+   	from "$buildDir/pkg/"
+	include "forge-installer-${project.ext.fversion}-win.exe"
+
+}
+
+task pkgOsxInstaller(type: Tar) {
+	 dependsOn installerOsx
+   	 baseName = 'Osx-Installer'
+   	 version = project.ext.fversion
+   	 extension = 'tar.gz'
+   	 destinationDir file("${buildDir}/inst")
+   	 compression = Compression.GZIP
+   	 from "$buildDir/pkg/"
+   	 include "forge-installer-${project.ext.fversion}-osx"
+
+}
+
+task pkgLinuxInstaller(type: Tar) {
+	 dependsOn installerLinux
+   	 baseName = 'Linux-Installer'
+   	 version = project.ext.fversion
+   	 extension = 'tar.gz'
+   	 destinationDir file("${buildDir}/inst")
+   	 compression = Compression.GZIP
+   	 from "$buildDir/pkg/"
+   	 include "forge-installer-${project.ext.fversion}-linux"
+}
+
 task pkgNormal() {
 	dependsOn pkgLinux, pkgOsx, pkgWindows
-	description 'Creates the installers for each platform'
+	description 'Creates package for each platform'
 }
 
 task installer {
-	dependsOn installerLinux, installerOsx, installerWin
+	dependsOn pkgLinuxInstaller, pkgOsxInstaller, pkgWindowsInstaller
 	description 'Creates the installers for each platform'
 }
 
@@ -129,7 +162,6 @@ class Installer extends Copy {
 		filename = str
 	}
 }
-
 
 class Download extends DefaultTask {
 
@@ -182,9 +214,9 @@ class Download extends DefaultTask {
 	}
 
 	private static String getName(String filename) {
-        if (filename == null) {
-            return null;
-        }
+		if (filename == null) {
+            		return null;
+        	}
 		def lastUnixPos = filename.lastIndexOf('/');
         	def lastWindowsPos = filename.lastIndexOf('\\');
         	def index = Math.max(lastUnixPos, lastWindowsPos);
