@@ -2,7 +2,7 @@
 
 Simple java wrapper using Mojangs JREs
 
-## Compileing
+## Compiling
 __Requirements__
   * Java 8
   * [Gradle](https://gradle.org/)
@@ -13,19 +13,8 @@ __Instructions for the default build__
   * build outputs to `./build/out/`
 
 __Instructions for packaging the default build__
-  * Run the command `gradle pkgNormal`
+  * Run the command `gradle pkg`
   * Build outputs to `./build/pkg/`
-
-__Instructions for packaging the forge installer__
-  * set the environment variable `INSTALLER_VERSION`
-    * For Windows `set INSTALLER_VERSION=VERSION`
-      * e.g. `set INSTALLER_VERSION=VERSION=1.11-13.20.0.2226`
-    * For Linux/Mac `export INSTALLER_VERSION=VERSION`
-      * e.g `export INSTALLER_VERSION=1.11-13.20.0.2226`
-  * Run the command `gradle installer`
-  * Build outputs `./build/pkginstaller/`
-  * NOTE: If the `INSTALLER_VERSION` is not set the installer defaults to
-    forge version `1.11-13.19.1.2199`
 
 ##Contributing
 __Requirements__
