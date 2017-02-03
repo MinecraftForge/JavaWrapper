@@ -10,7 +10,7 @@ golang {
 	// packageName = project.name
 	dependencies {
 		build 'github.com/fatih/color'
-        	build 'github.com/ulikunitz/xz/lzma'
+		build 'github.com/ulikunitz/xz/lzma'
 		build 'github.com/kardianos/osext'
 
 	//Hack to fix the build
@@ -46,88 +46,88 @@ task downloadForge(type: Download) {
 def baseInclude = "${project.binname}-v${project.version}"
 task pkgWindows(type: Zip) {
 	dependsOn baseBuild
-   	baseName = 'Windows'
-   	version = project.version
-   	destinationDir file("${buildDir}/pkg")
-   	from "$buildDir/out/"
+	baseName = 'Windows'
+	version = project.version
+	destinationDir file("${buildDir}/pkg")
+	from "$buildDir/out/"
 	include '*.exe'
 }
 
 task pkgOsx(type: Tar) {
 	 dependsOn baseBuild
-   	 baseName = 'Osx'
-   	 version = project.version
-   	 extension = 'tar.gz'
-   	 destinationDir file("${buildDir}/pkg")
-   	 compression = Compression.GZIP
-   	 from "$buildDir/out/"
-   	 include "$baseInclude-darwin-amd64"
+	 baseName = 'Osx'
+	 version = project.version
+	 extension = 'tar.gz'
+	 destinationDir file("${buildDir}/pkg")
+	 compression = Compression.GZIP
+	 from "$buildDir/out/"
+	 include "$baseInclude-darwin-amd64"
 }
 
 task pkgLinux(type: Tar) {
 	 dependsOn baseBuild
-   	 baseName = 'Linux'
-   	 version = project.version
-   	 extension = 'tar.gz'
-   	 destinationDir file("${buildDir}/pkg")
-   	 compression = Compression.GZIP
-   	 from "$buildDir/out/"
-   	 include "$baseInclude-linux-386"
+	 baseName = 'Linux'
+	 version = project.version
+	 extension = 'tar.gz'
+	 destinationDir file("${buildDir}/pkg")
+	 compression = Compression.GZIP
+	 from "$buildDir/out/"
+	 include "$baseInclude-linux-386"
 }
 
 task installerWin(type: Installer){
 	 dependsOn pkgWindows
-   	 from zipTree(pkgWindows.outputs.files.singleFile)
-   	 into file("${buildDir}/pkg/")
-   	 rename "forge-installer-${project.ext.fversion}-win.exe"
+	 from zipTree(pkgWindows.outputs.files.singleFile)
+	 into file("${buildDir}/pkg/")
+	 rename "forge-installer-${project.ext.fversion}-win.exe"
 }
 
 task installerOsx(type: Installer) {
 	 dependsOn pkgOsx
-   	 from tarTree(resources.gzip(pkgOsx.outputs.files.singleFile))
-   	 into file("${buildDir}/pkg/")
-   	 rename "forge-installer-${project.ext.fversion}-osx"
+	 from tarTree(resources.gzip(pkgOsx.outputs.files.singleFile))
+	 into file("${buildDir}/pkg/")
+	 rename "forge-installer-${project.ext.fversion}-osx"
 }
 
 task installerLinux(type: Installer) {
 	dependsOn pkgLinux
-    	from tarTree(resources.gzip(pkgLinux.outputs.files.singleFile))
-    	into file("${buildDir}/pkg/")
-    	rename "forge-installer-${project.ext.fversion}-linux"
+	from tarTree(resources.gzip(pkgLinux.outputs.files.singleFile))
+	into file("${buildDir}/pkg/")
+	rename "forge-installer-${project.ext.fversion}-linux"
 }
 
 
 task pkgWindowsInstaller(type: Zip) {
 	dependsOn installerWin
-   	baseName = 'Windows-Installer'
-   	version = project.ext.fversion
-   	destinationDir file("${buildDir}/inst")
-   	from "$buildDir/pkg/"
+	baseName = 'Windows-Installer'
+	version = project.ext.fversion
+	destinationDir file("${buildDir}/pkginstaller")
+	from "$buildDir/pkg/"
 	include "forge-installer-${project.ext.fversion}-win.exe"
 
 }
 
 task pkgOsxInstaller(type: Tar) {
 	 dependsOn installerOsx
-   	 baseName = 'Osx-Installer'
-   	 version = project.ext.fversion
-   	 extension = 'tar.gz'
-   	 destinationDir file("${buildDir}/inst")
-   	 compression = Compression.GZIP
-   	 from "$buildDir/pkg/"
-   	 include "forge-installer-${project.ext.fversion}-osx"
+	 baseName = 'Osx-Installer'
+	 version = project.ext.fversion
+	 extension = 'tar.gz'
+	 destinationDir file("${buildDir}/pkginstaller")
+	 compression = Compression.GZIP
+	 from "$buildDir/pkg/"
+	 include "forge-installer-${project.ext.fversion}-osx"
 
 }
 
 task pkgLinuxInstaller(type: Tar) {
 	 dependsOn installerLinux
-   	 baseName = 'Linux-Installer'
-   	 version = project.ext.fversion
-   	 extension = 'tar.gz'
-   	 destinationDir file("${buildDir}/inst")
-   	 compression = Compression.GZIP
-   	 from "$buildDir/pkg/"
-   	 include "forge-installer-${project.ext.fversion}-linux"
+	 baseName = 'Linux-Installer'
+	 version = project.ext.fversion
+	 extension = 'tar.gz'
+	 destinationDir file("${buildDir}/pkginstaller")
+	 compression = Compression.GZIP
+	 from "$buildDir/pkg/"
+	 include "forge-installer-${project.ext.fversion}-linux"
 }
 
 task pkgNormal() {
@@ -149,9 +149,9 @@ class Installer extends Copy {
 	def filename
 	{
 		outputs.upToDateWhen {false}
-       		dependsOn project.tasks.downloadForge
+		dependsOn project.tasks.downloadForge
 		doLast {
-            		// append to the end of the binary
+			// append to the end of the binary
 			def file = new File(this.outputs.files.singleFile, filename)
 			file << project.tasks.downloadForge.outputs.files.singleFile.bytes
 		}
@@ -166,13 +166,13 @@ class Installer extends Copy {
 class Download extends DefaultTask {
 
 	@Input
-    	def src
-    	@Input
-    	def hash
-    	@Input
-    	def dest = temporaryDir
-    	@OutputFile
-    	def outputFile
+	def src
+	@Input
+	def hash
+	@Input
+	def dest = temporaryDir
+	@OutputFile
+	def outputFile
 
 	def setSrc(src) {
 		this.src = src
@@ -200,27 +200,27 @@ class Download extends DefaultTask {
 		if (hash) {
 			def remoteHash = new URL(src + '.' + hash).text
 
-            		def digest = java.security.MessageDigest.getInstance(hash)
-            		file.eachByte(4095) {buffer, length ->
-            			digest.update(buffer, 0, length)
-            		}
-            		def localHash = new BigInteger(1, digest.digest()).toString(16).padLeft(32, '0')
-            		
-            		if (localHash != remoteHash) {
-            			throw new GradleException("File hash failed. Expected $remoteHash, but got $localHash")
-            		}
-        	}
+			def digest = java.security.MessageDigest.getInstance(hash)
+			file.eachByte(4095) {buffer, length ->
+				digest.update(buffer, 0, length)
+			}
+			def localHash = new BigInteger(1, digest.digest()).toString(16).padLeft(32, '0')
+			
+			if (localHash != remoteHash) {
+				throw new GradleException("File hash failed. Expected $remoteHash, but got $localHash")
+			}
+		}
 		
 	}
 
 	private static String getName(String filename) {
 		if (filename == null) {
-            		return null;
-        	}
+			return null;
+		}
 		def lastUnixPos = filename.lastIndexOf('/');
-        	def lastWindowsPos = filename.lastIndexOf('\\');
-        	def index = Math.max(lastUnixPos, lastWindowsPos);
+		def lastWindowsPos = filename.lastIndexOf('\\');
+		def index = Math.max(lastUnixPos, lastWindowsPos);
 
-        	return filename.substring(index + 1);
+		return filename.substring(index + 1);
 	}
 }
