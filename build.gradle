@@ -2,6 +2,8 @@ plugins {
 	id 'org.echocat.golang' version '0.1.13'
 }
 
+//apply plugin: 'maven'
+
 version = project.version
 group 'github.com/MinecraftForge/JavaWrapper'
 golang {
@@ -32,6 +34,16 @@ golang {
 	}
 }
 
+task renameBin(type: Copy) {
+	dependsOn baseBuild
+	from("$buildDir/out/")
+	into("$buildDir/out/")
+	rename("$project.binname-v$project.version-windows-386.exe", "$project.binname-v$project.version-win.exe")
+	rename("$project.binname-v$project.version-linux-386", "$project.binname-v$project.version-linux")
+	rename("$project.binname-v$project.version-darwin-amd64", "$project.binname-v$project.version-osx")
+
+}
+
 def baseInclude = "${project.binname}-v${project.version}"
 task pkgWindows(type: Zip) {
 	dependsOn baseBuild
@@ -50,7 +62,7 @@ task pkgOsx(type: Tar) {
 	 destinationDir file("${buildDir}/pkg")
 	 compression = Compression.GZIP
 	 from "$buildDir/out/"
-	 include "$baseInclude-darwin-amd64"
+	 include "$baseInclude-osx"
 }
 
 task pkgLinux(type: Tar) {
@@ -61,7 +73,7 @@ task pkgLinux(type: Tar) {
 	 destinationDir file("${buildDir}/pkg")
 	 compression = Compression.GZIP
 	 from "$buildDir/out/"
-	 include "$baseInclude-linux-386"
+	 include "$baseInclude-linux"
 }
 
 task pkg() {
@@ -72,3 +84,64 @@ task pkg() {
 task wrapper(type: Wrapper) {
 	gradleVersion = '3.3'
 }
+
+//artifacts {
+//	
+//}
+
+//uploadArchives {
+//    repositories.mavenDeployer {
+//        if (project.hasProperty('forgeMavenPass'))
+//        {
+//            repository(url: "http://files.minecraftforge.net/maven/manage/upload") {
+//                authentication(userName: "forge", password: project.getProperty('forgeMavenPass')) // the elvis operator. look it up.
+//            }
+//        }
+//        else
+//        {
+//            // local repo folder. Might wanna juset use  gradle install   if you wanans end it to maven-local
+//            repository(url: 'file://localhost/' + project.file('repo').getAbsolutePath())
+//        }
+//
+//        pom {
+//            groupId = project.group
+//            version = project.version
+//            artifactId = project.archivesBaseName
+//            project {
+//                name project.archivesBaseName
+//                description 'Java wrapper'
+//                url 'https://github.com/MinecraftForge/JavaWrapper'
+//
+//                scm {
+//                    url 'https://github.com/MinecraftForge/JavaWrapper'
+//                    connection 'scm:git:git://github.com/MinecraftForge/JavaWrapper.git'
+//                    developerConnection 'scm:git:git@github.com:MinecraftForge/JavaWrapper.git'
+//                }
+//
+//                issueManagement {
+//                    system 'github'
+//                    url 'https://github.com/MinecraftForge/JavaWraooer/issues'
+//                }
+//
+//                licenses {
+//                    license {
+//                        name 'LGPL'
+//                        url 'https://raw.github.com/MinecraftForge/JavaWrapper/master/LICENSE'
+//                        distribution 'repo'
+//                    }
+//                }
+//
+//                developers {
+//                    developer {
+//                        id 'Illyohs'
+//                        name 'Anthony Anderson'
+//                        roles { role 'developer' }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
+//
+//
+
