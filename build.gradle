@@ -29,7 +29,7 @@ golang {
 		]
 
 	useTemporaryGopath = true
-	//Manully change the output directory it will out b
+	//Manully change the output directory 
 	outputFilenamePattern = "$buildDir/out/$project.binname-v$project.version-%{platform}%{extension}"
 	}
 }
@@ -85,30 +85,6 @@ task wrapper(type: Wrapper) {
 	gradleVersion = '3.3'
 }
 
-configurations {
-    archives
-}
-
-artifacts {
-	//Binaries
-	archives file("$buildDir/out/$baseInclude-win.exe")
-	archives file("$buildDir/out/$baseInclude-linux")
-	archives file("$buildDir/out/$baseInclude-osx")
-	//Compressed   
-	archives file("$buildDir/pkg/$project.binname-Win-${project.version}.zip")
-	archives file("$buildDir/out/$project.binname-Linux-${project.version}.tar.gz")
-	archives file("$buildDir/out/$project.binname-Win-${project.version}.tar.gz")
-}
-
-String getPass()
-{
-	if (project.hasProperty("forgeMavenPass")) {
-		return project.getProperty("forgeMavenPass")
-	} else {
-		return "NOPE"
-	}
-}
-
 publishing {
 	repositories {
 		maven {
@@ -138,60 +114,4 @@ publishing {
 		}
 	}
 }
-
-//uploadArchives {
-//    repositories.mavenDeployer {
-//        if (project.hasProperty('forgeMavenPass'))
-//        {
-//            repository(url: "http://files.minecraftforge.net/maven/manage/upload") {
-//                authentication(userName: "forge", password: project.getProperty('forgeMavenPass')) // the elvis operator. look it up.
-//            }
-//        }
-//        else
-//        {
-//            // local repo folder. Might wanna juset use  gradle install   if you wanans end it to maven-local
-//            repository(url: 'file://localhost/' + project.file('repo').getAbsolutePath())
-//        }
-//
-//        pom {
-//            groupId = project.group
-//            version = project.version
-//            artifactId = project.archivesBaseName
-//            project {
-//                name project.archivesBaseName
-//                description 'Java wrapper'
-//                url 'https://github.com/MinecraftForge/JavaWrapper'
-//
-//                scm {
-//                    url 'https://github.com/MinecraftForge/JavaWrapper'
-//                    connection 'scm:git:git://github.com/MinecraftForge/JavaWrapper.git'
-//                    developerConnection 'scm:git:git@github.com:MinecraftForge/JavaWrapper.git'
-//                }
-//
-//                issueManagement {
-//                    system 'github'
-//                    url 'https://github.com/MinecraftForge/JavaWraooer/issues'
-//                }
-//
-//                licenses {
-//                    license {
-//                        name 'LGPL'
-//                        url 'https://raw.github.com/MinecraftForge/JavaWrapper/master/LICENSE'
-//                        distribution 'repo'
-//                    }
-//                }
-//
-//                developers {
-//                    developer {
-//                        id 'Illyohs'
-//                        name 'Anthony Anderson'
-//                        roles { role 'developer' }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
-//
-
 
