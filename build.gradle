@@ -99,7 +99,7 @@ publishing {
 	}
 	publications {
 		maven(MavenPublication) {
-			groupId 'net.minecraftforge.wrapper'
+			groupId 'net.minecraftforge.javawrapper'
 			artifactId 'javawrapper'
 			artifact(pkgWindows) {
 				classifier 'win'
@@ -110,7 +110,6 @@ publishing {
 			artifact(pkgLinux) {
 				classifier 'linux'
 			}
-			
 		}
 	}
 }
