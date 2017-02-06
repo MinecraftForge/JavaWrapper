@@ -1,8 +1,8 @@
 plugins {
 	id 'org.echocat.golang' version '0.1.13'
+	id 'maven-publish'
 }
 
-//apply plugin: 'maven'
 
 version = project.version
 group 'github.com/MinecraftForge/JavaWrapper'
@@ -46,8 +46,8 @@ task renameBin(type: Copy) {
 
 def baseInclude = "${project.binname}-v${project.version}"
 task pkgWindows(type: Zip) {
-	dependsOn baseBuild
-	baseName = "$project.binname-Win-$project.version"
+	dependsOn renameBin
+	baseName = "$project.binname-Win"
 	version = project.version
 	destinationDir file("${buildDir}/pkg")
 	from "$buildDir/out/"
@@ -55,8 +55,8 @@ task pkgWindows(type: Zip) {
 }
 
 task pkgOsx(type: Tar) {
-	 dependsOn baseBuild
-	 baseName = "$project.binname-Osx-$project.version"
+	 dependsOn renameBin
+	 baseName = "$project.binname-Osx"
 	 version = project.version
 	 extension = 'tar.gz'
 	 destinationDir file("${buildDir}/pkg")
@@ -66,8 +66,8 @@ task pkgOsx(type: Tar) {
 }
 
 task pkgLinux(type: Tar) {
-	 dependsOn baseBuild
-	 baseName = "$project.binname-Linux-$project.version"
+	 dependsOn renameBin
+	 baseName = "$project.binname-Linux"
 	 version = project.version
 	 extension = 'tar.gz'
 	 destinationDir file("${buildDir}/pkg")
@@ -85,9 +85,59 @@ task wrapper(type: Wrapper) {
 	gradleVersion = '3.3'
 }
 
-//artifacts {
-//	
-//}
+configurations {
+    archives
+}
+
+artifacts {
+	//Binaries
+	archives file("$buildDir/out/$baseInclude-win.exe")
+	archives file("$buildDir/out/$baseInclude-linux")
+	archives file("$buildDir/out/$baseInclude-osx")
+	//Compressed   
+	archives file("$buildDir/pkg/$project.binname-Win-${project.version}.zip")
+	archives file("$buildDir/out/$project.binname-Linux-${project.version}.tar.gz")
+	archives file("$buildDir/out/$project.binname-Win-${project.version}.tar.gz")
+}
+
+String getPass()
+{
+	if (project.hasProperty("forgeMavenPass")) {
+		return project.getProperty("forgeMavenPass")
+	} else {
+		return "NOPE"
+	}
+}
+
+publishing {
+	repositories {
+		maven {
+			name  'Forge Maven'
+			credentials {
+				username 'forge'
+				password "$project.forgeMvnPass"
+
+			}
+			url "http://files.minecraftforge.net/maven/manage/upload"
+		}
+	}
+	publications {
+		maven(MavenPublication) {
+			groupId 'net.minecraftforge.wrapper'
+			artifactId 'javawrapper'
+			artifact(pkgWindows) {
+				classifier 'win'
+			}
+			artifact(pkgOsx) {
+				classifier 'osx'
+			}
+			artifact(pkgLinux) {
+				classifier 'linux'
+			}
+			
+		}
+	}
+}
 
 //uploadArchives {
 //    repositories.mavenDeployer {
@@ -143,5 +193,5 @@ task wrapper(type: Wrapper) {
 //    }
 //}
 //
-//
+
 
