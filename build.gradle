@@ -51,7 +51,7 @@ task pkgWindows(type: Zip) {
 	version = project.version
 	destinationDir file("${buildDir}/pkg")
 	from "$buildDir/out/"
-	include '*.exe'
+	include "$baseInclude-win.exe"
 }
 
 task pkgOsx(type: Tar) {
