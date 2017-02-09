@@ -47,7 +47,7 @@ task renameBin(type: Copy) {
 def baseInclude = "${project.binname}-v${project.version}"
 task pkgWindows(type: Zip) {
 	dependsOn renameBin
-	baseName = "$project.binname-Win"
+	baseName = "$project.binname-win"
 	version = project.version
 	destinationDir file("${buildDir}/pkg")
 	from "$buildDir/out/"
@@ -56,7 +56,7 @@ task pkgWindows(type: Zip) {
 
 task pkgOsx(type: Tar) {
 	 dependsOn renameBin
-	 baseName = "$project.binname-Osx"
+	 baseName = "$project.binname-osx"
 	 version = project.version
 	 extension = 'tar.gz'
 	 destinationDir file("${buildDir}/pkg")
@@ -67,7 +67,7 @@ task pkgOsx(type: Tar) {
 
 task pkgLinux(type: Tar) {
 	 dependsOn renameBin
-	 baseName = "$project.binname-Linux"
+	 baseName = "$project.binname-linux"
 	 version = project.version
 	 extension = 'tar.gz'
 	 destinationDir file("${buildDir}/pkg")
