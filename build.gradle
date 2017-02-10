@@ -49,7 +49,15 @@ def baseInclude = "${project.binname}-v${project.version}"
 task srinkWrappers(type: Exec) {
 	dependsOn renameBin
 
-	commandLine "upx", "build/out/$baseInclude-linux"
+	commandLine "./test/upx-linux", "build/out/$baseInclude-linux"
+	commandLine "./test/upx-linux", "build/out/$baseInclude-osx"
+	commandLine "./test/upx-linux", "build/out/$baseInclude-win.exe"
+
+	standardOutput = new ByteArrayOutputStream()
+
+	ext.output = {
+		return standardOutput.toString()
+	}
 
 }
 
