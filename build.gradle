@@ -45,6 +45,14 @@ task renameBin(type: Copy) {
 }
 
 def baseInclude = "${project.binname}-v${project.version}"
+
+task srinkWrappers(type: Exec) {
+	dependsOn renameBin
+
+	commandLine "upx", "build/out/$baseInclude-linux"
+
+}
+
 task pkgWindows(type: Zip) {
 	dependsOn renameBin
 	baseName = "$project.binname-win"
