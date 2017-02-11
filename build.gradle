@@ -1,11 +1,13 @@
+
 plugins {
 	id 'org.echocat.golang' version '0.1.14'
+	id "de.undercouch.download" version "3.2.0"
 	id 'maven-publish'
 }
 
-
 version = project.version
 group 'github.com/MinecraftForge/JavaWrapper'
+
 golang {
 	platforms = System.getProperty("platforms", project.platforms)
 
@@ -29,7 +31,7 @@ golang {
 		]
 
 	useTemporaryGopath = true
-	//Manully change the output directory 
+	//Manully change the output directory
 	outputFilenamePattern = "$buildDir/out/$project.binname-v$project.version-%{platform}%{extension}"
 	}
 }
@@ -46,23 +48,59 @@ task renameBin(type: Copy) {
 
 def baseInclude = "${project.binname}-v${project.version}"
 
-task srinkWrappers(type: Exec) {
-	dependsOn renameBin
 
-	commandLine "./test/upx-linux", "build/out/$baseInclude-linux"
-	commandLine "./test/upx-linux", "build/out/$baseInclude-osx"
-	commandLine "./test/upx-linux", "build/out/$baseInclude-win.exe"
 
-	standardOutput = new ByteArrayOutputStream()
-
-	ext.output = {
-		return standardOutput.toString()
+//Using this because fuck the golang plugin
+import de.undercouch.gradle.tasks.download.Download
+task getUpx() {
+	download {
+		src([
+				"http://files.minecraftforge.net/maven/manage/upload/net/minecraftforge/repkg/upx/3.93-forge/upx-3.93-forge-linux.tar.gz",
+				"http://files.minecraftforge.net/maven/manage/upload/net/minecraftforge/repkg/upx/3.93-forge/upx-3.93-forge-osx.tar.gz",
+				"http://files.minecraftforge.net/maven/manage/upload/net/minecraftforge/repkg/upx/3.93-forge/upx-3.93-forge-win.tar.gz"
+		])
+		dest new File("$buildDir/upx")
 	}
+	copy {
+		from tarTree("$buildDir/upx/upx-3.93-forge-linux.tar.gz")
+		fileMode=0755
+		into "$buildDir/upx"
 
+		from tarTree("$buildDir/upx/upx-3.93-forge-win.tar.gz")
+		fileMode=0755
+		into "$buildDir/upx"
+
+		from tarTree("$buildDir/upx/upx-3.93-forge-osx.tar.gz")
+		fileMode=0755
+		into "$buildDir/upx"
+	}
+}
+
+
+import org.apache.tools.ant.taskdefs.condition.Os
+task shrinkWrapper {
+	dependsOn renameBin, getUpx
+
+	ext.Shrink = { target ->
+		exec {
+			if (Os.isFamily(Os.FAMILY_UNIX)) {
+				commandLine './build/upx/upx-linux/upx-linux', target
+			} else if (Os.isFamily(Os.FAMILY_MAC)) {
+				commandLine './build/upx/upx-osx/upx-osx', target
+			} else if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+				commandLine 'build/upx/upx-win/upx-win.exe', target
+			}
+		}
+	}
+	doLast {
+		Shrink("$buildDir/out/$baseInclude-osx")
+		Shrink("$buildDir/out/$baseInclude-linux")
+		Shrink("$buildDir/out/$baseInclude-win.exe")
+	}
 }
 
 task pkgWindows(type: Zip) {
-	dependsOn renameBin
+	dependsOn shrinkWrapper
 	baseName = "$project.binname-win"
 	version = project.version
 	destinationDir file("${buildDir}/pkg")
@@ -71,7 +109,7 @@ task pkgWindows(type: Zip) {
 }
 
 task pkgOsx(type: Tar) {
-	 dependsOn renameBin
+	 dependsOn shrinkWrapper
 	 baseName = "$project.binname-osx"
 	 version = project.version
 	 extension = 'tar.gz'
@@ -82,7 +120,7 @@ task pkgOsx(type: Tar) {
 }
 
 task pkgLinux(type: Tar) {
-	 dependsOn renameBin
+	 dependsOn shrinkWrapper
 	 baseName = "$project.binname-linux"
 	 version = project.version
 	 extension = 'tar.gz'
