@@ -78,6 +78,7 @@ task getUpx() {
 
 
 import org.apache.tools.ant.taskdefs.condition.Os
+
 task shrinkWrapper {
 	dependsOn renameBin, getUpx
 
@@ -99,39 +100,75 @@ task shrinkWrapper {
 	}
 }
 
+task createAppDir {
+	dependsOn shrinkWrapper
+	doLast {
+		def appDir = new File("$buildDir/pkg/app-${project.version}/$baseInclude-osxapp/Contents/MacOs")
+		if (!appDir.exists()) {
+			appDir.mkdirs()
+		}
+
+		copy {
+			from "$buildDir/out/$baseInclude-osx"
+			into "$buildDir/pkg/app-${project.version}/$baseInclude-osxapp/Contents/MacOs/"
+		}
+
+		String contents = new File("Info.plist").getText('UTF-8')
+		contents = contents.replaceAll("@NAME@", project.binname).replaceAll("@VERSION@", project.version).replaceAll("@EXE@", "$baseInclude-osx")
+		new File("$buildDir/pkg/app-${project.version}/$baseInclude-osxapp/Contents/Info.plist").write(contents, 'UTF-8')
+
+	}
+
+
+}
+
 task pkgWindows(type: Zip) {
 	dependsOn shrinkWrapper
-	baseName = "$project.binname-win"
+	baseName = "$project.binname"
+	classifier = "win"
 	version = project.version
 	destinationDir file("${buildDir}/pkg")
 	from "$buildDir/out/"
 	include "$baseInclude-win.exe"
 }
 
-task pkgOsx(type: Tar) {
-	 dependsOn shrinkWrapper
-	 baseName = "$project.binname-osx"
-	 version = project.version
-	 extension = 'tar.gz'
-	 destinationDir file("${buildDir}/pkg")
-	 compression = Compression.GZIP
-	 from "$buildDir/out/"
-	 include "$baseInclude-osx"
+task pkgMinOsx(type: Tar) {
+	dependsOn shrinkWrapper
+	baseName = "$project.binname"
+	classifier = "minosx"
+	version = project.version
+	extension = 'tar.gz'
+	destinationDir file("${buildDir}/pkg")
+	compression = Compression.GZIP
+	from "$buildDir/out/"
+	include "$baseInclude-osx"
+}
+
+task pkgOsxApp(type: Tar) {
+	dependsOn createAppDir
+	baseName = "$project.binname"
+	classifier = 'osxapp'
+	version = project.version
+	extension = 'tar.gz'
+	destinationDir file("${buildDir}/pkg")
+	compression = Compression.GZIP
+	from ("$buildDir/pkg/app-${project.version}")
 }
 
 task pkgLinux(type: Tar) {
-	 dependsOn shrinkWrapper
-	 baseName = "$project.binname-linux"
-	 version = project.version
-	 extension = 'tar.gz'
-	 destinationDir file("${buildDir}/pkg")
-	 compression = Compression.GZIP
-	 from "$buildDir/out/"
-	 include "$baseInclude-linux"
+	dependsOn shrinkWrapper
+	baseName = "$project.binname"
+	classifier = 'linux'
+	version = project.version
+	extension = 'tar.gz'
+	destinationDir file("${buildDir}/pkg")
+	compression = Compression.GZIP
+	from "$buildDir/out/"
+	include "$baseInclude-linux"
 }
 
 task pkg() {
-	dependsOn pkgLinux, pkgOsx, pkgWindows
+	dependsOn pkgLinux, pkgMinOsx, pkgOsxApp, pkgWindows
 	description 'Creates package for each platform'
 }
 
@@ -155,15 +192,10 @@ publishing {
 		maven(MavenPublication) {
 			groupId 'net.minecraftforge.javawrapper'
 			artifactId 'javawrapper'
-			artifact(pkgWindows) {
-				classifier 'win'
-			}
-			artifact(pkgOsx) {
-				classifier 'osx'
-			}
-			artifact(pkgLinux) {
-				classifier 'linux'
-			}
+			artifact(pkgWindows)
+			artifact(pkgMinOsx)
+			artifact(pkgOsxApp)
+			artifact(pkgLinux)
 		}
 	}
 }

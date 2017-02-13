@@ -26,5 +26,6 @@ __Code Style__
     * Golang will autoformat by using this command
 
 __PR Guidelines__
+  * Target the devel branch
   * One feature per PR
   * Sign off commits
