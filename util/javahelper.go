@@ -25,7 +25,6 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/kardianos/osext"
 )
 
 func IsJavaInstalled() bool {
@@ -118,7 +117,7 @@ func Wrapper(jar string) ([]byte, error) {
  * Launches either the wrapper or an appended jar
  */
 func ModedLauncher() {
-	binName, _ := osext.Executable()
+	binName, _ := os.Executable()
 
 	CheckForLauncher()
 	_, err := Wrapper(binName)

@@ -15,7 +15,6 @@ golang {
 	dependencies {
 		build 'github.com/fatih/color'
 		build 'github.com/ulikunitz/xz/lzma'
-		build 'github.com/kardianos/osext'
 
 	//Hack to fix the build
 	deleteAllCachedDependenciesOnClean = true
@@ -33,6 +32,10 @@ golang {
 	useTemporaryGopath = true
 	//Manully change the output directory
 	outputFilenamePattern = "$buildDir/out/$project.binname-v$project.version-%{platform}%{extension}"
+	}
+
+	toolchain {
+		goversion = 'go1.8'
 	}
 }
 
@@ -103,7 +106,7 @@ task shrinkWrapper {
 task createAppDir {
 	dependsOn shrinkWrapper
 	doLast {
-		def appDir = new File("$buildDir/pkg/app-${project.version}/$baseInclude-osxapp/Contents/MacOs")
+		def appDir = new File("$buildDir/pkg/app-${project.version}/$baseInclude-osx.app/Contents/MacOs")
 		if (!appDir.exists()) {
 			appDir.mkdirs()
 		}
@@ -115,7 +118,7 @@ task createAppDir {
 
 		String contents = new File("Info.plist").getText('UTF-8')
 		contents = contents.replaceAll("@NAME@", project.binname).replaceAll("@VERSION@", project.version).replaceAll("@EXE@", "$baseInclude-osx")
-		new File("$buildDir/pkg/app-${project.version}/$baseInclude-osxapp/Contents/Info.plist").write(contents, 'UTF-8')
+		new File("$buildDir/pkg/app-${project.version}/$baseInclude-osx.app/Contents/Info.plist").write(contents, 'UTF-8')
 
 	}
 
@@ -132,22 +135,10 @@ task pkgWindows(type: Zip) {
 	include "$baseInclude-win.exe"
 }
 
-task pkgMinOsx(type: Tar) {
-	dependsOn shrinkWrapper
-	baseName = "$project.binname"
-	classifier = "minosx"
-	version = project.version
-	extension = 'tar.gz'
-	destinationDir file("${buildDir}/pkg")
-	compression = Compression.GZIP
-	from "$buildDir/out/"
-	include "$baseInclude-osx"
-}
-
 task pkgOsxApp(type: Tar) {
 	dependsOn createAppDir
 	baseName = "$project.binname"
-	classifier = 'osxapp'
+	classifier = 'osx'
 	version = project.version
 	extension = 'tar.gz'
 	destinationDir file("${buildDir}/pkg")
@@ -168,7 +159,7 @@ task pkgLinux(type: Tar) {
 }
 
 task pkg() {
-	dependsOn pkgLinux, pkgMinOsx, pkgOsxApp, pkgWindows
+	dependsOn pkgLinux, pkgOsxApp, pkgWindows
 	description 'Creates package for each platform'
 }
 
@@ -193,7 +184,6 @@ publishing {
 			groupId 'net.minecraftforge.javawrapper'
 			artifactId 'javawrapper'
 			artifact(pkgWindows)
-			artifact(pkgMinOsx)
 			artifact(pkgOsxApp)
 			artifact(pkgLinux)
 		}
