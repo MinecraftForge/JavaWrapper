@@ -113,7 +113,7 @@ task createAppDir {
 
 		copy {
 			from "$buildDir/out/$baseInclude-osx"
-			into "$buildDir/pkg/app-${project.version}/$baseInclude-osxapp/Contents/MacOs/"
+			into "$buildDir/pkg/app-${project.version}/$baseInclude-osx.app/Contents/MacOs/"
 		}
 
 		String contents = new File("Info.plist").getText('UTF-8')
