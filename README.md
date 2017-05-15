@@ -16,7 +16,7 @@ __Instructions for packaging the default build__
   * Run the command `gradle pkg`
   * Build outputs to `./build/pkg/`
 
-##Contributing
+## Contributing
 __Requirements__
   * [GoLang](https://golang.org/)
 
