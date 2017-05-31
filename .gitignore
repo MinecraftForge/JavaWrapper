@@ -6,6 +6,7 @@ test
 
 *.jar
 *.zip
-*.exe
+
 vendor
 JavaWrapper
+JavaWrapper.exe
