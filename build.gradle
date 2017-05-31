@@ -1,7 +1,6 @@
 
 plugins {
-	id 'org.echocat.golang' version '0.1.14'
-	id "de.undercouch.download" version "3.2.0"
+	id 'org.echocat.golang' version '0.1.16'
 	id 'maven-publish'
 }
 
@@ -52,47 +51,19 @@ task renameBin(type: Copy) {
 def baseInclude = "${project.binname}-v${project.version}"
 
 
-
-//Using this because fuck the golang plugin
-import de.undercouch.gradle.tasks.download.Download
-task getUpx() {
-	download {
-		src([
-				"http://files.minecraftforge.net/maven/manage/upload/net/minecraftforge/repkg/upx/3.93-forge/upx-3.93-forge-linux.tar.gz",
-				"http://files.minecraftforge.net/maven/manage/upload/net/minecraftforge/repkg/upx/3.93-forge/upx-3.93-forge-osx.tar.gz",
-				"http://files.minecraftforge.net/maven/manage/upload/net/minecraftforge/repkg/upx/3.93-forge/upx-3.93-forge-win.tar.gz"
-		])
-		dest new File("$buildDir/upx")
-	}
-	copy {
-		from tarTree("$buildDir/upx/upx-3.93-forge-linux.tar.gz")
-		fileMode=0755
-		into "$buildDir/upx"
-
-		from tarTree("$buildDir/upx/upx-3.93-forge-win.tar.gz")
-		fileMode=0755
-		into "$buildDir/upx"
-
-		from tarTree("$buildDir/upx/upx-3.93-forge-osx.tar.gz")
-		fileMode=0755
-		into "$buildDir/upx"
-	}
-}
-
-
 import org.apache.tools.ant.taskdefs.condition.Os
 
 task shrinkWrapper {
-	dependsOn renameBin, getUpx
+	dependsOn renameBin
 
 	ext.Shrink = { target ->
 		exec {
 			if (Os.isFamily(Os.FAMILY_UNIX)) {
-				commandLine './build/upx/upx-linux/upx-linux', target
+				commandLine './upxrepkg/upx-linux', target
 			} else if (Os.isFamily(Os.FAMILY_MAC)) {
-				commandLine './build/upx/upx-osx/upx-osx', target
+				commandLine './upxrepkg/upx-darwin', target
 			} else if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-				commandLine 'build/upx/upx-win/upx-win.exe', target
+				commandLine './upxrepkg/upx-win.exe', target
 			}
 		}
 	}
