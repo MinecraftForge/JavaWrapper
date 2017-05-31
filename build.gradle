@@ -34,7 +34,7 @@ golang {
 	}
 
 	toolchain {
-		goversion = 'go1.8'
+		goversion = 'go1.8.3'
 	}
 }
 
