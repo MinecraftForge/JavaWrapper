@@ -1,0 +1,9 @@
+{
+    "mirrors": [
+        {
+            "name": "Mojang",
+            "url": "http://launchermeta.mojang.com/mc-staging/launcher.json"
+        }
+    ],
+    "stamp": "06-06-2017_21:25:34"
+}
