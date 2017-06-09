@@ -144,7 +144,7 @@ func CheckForLauncher() {
 func macHasJ8() bool {
 	jdks, _ := ioutil.ReadDir("Library/java/JavaVitualMachines/")
 	for _, f := range jdks {
-		if strings.Contains(f.Name, "1.8") {
+		if strings.Contains(f.Name(), "1.8") {
 			return true
 		}
 	}
