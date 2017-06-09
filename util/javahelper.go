@@ -93,12 +93,18 @@ func GenericMojangJavaLauncher(target string) ([]byte, error) {
  * Check for java 8
  */
 func IsJavaVersionValid() bool {
-	out, _ := exec.Command("java", "-version").CombinedOutput()
 
-	if strings.Contains(string(out), "1.8") {
-		return true
-	} else {
+	//Anoying check due to mac being tempermental
+	if GetThisPlatform() == "darwin" {
 		return false
+	} else {
+		out, _ := exec.Command("java", "-version").CombinedOutput()
+
+		if strings.Contains(string(out), "1.8") {
+			return true
+		} else {
+			return false
+		}
 	}
 }
 
