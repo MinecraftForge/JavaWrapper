@@ -89,6 +89,17 @@ func GenericMojangJavaLauncher(target string) ([]byte, error) {
 	return nil, nil
 }
 
+func macJREcheker() bool {
+	jrePath = "Library/Java/JavaVirtualMachines/jdk1.8.0_70.jdk"
+	if _, err := os.Stat(jrePath); os.IsNotExist(err) {
+		return false
+	} else {
+		return true
+	}
+	return false
+
+}
+
 /*
  * Check for java 8
  */
@@ -96,7 +107,7 @@ func IsJavaVersionValid() bool {
 
 	//Anoying check due to mac being tempermental
 	if GetThisPlatform() == "darwin" {
-		return false
+		return macJREcheker()
 	} else {
 		out, _ := exec.Command("java", "-version").CombinedOutput()
 
