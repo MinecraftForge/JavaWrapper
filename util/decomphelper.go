@@ -22,13 +22,12 @@ package util
 import (
 	"archive/zip"
 	"bufio"
-	"fmt"
 	"io"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
 
-	"github.com/fatih/color"
 	"github.com/ulikunitz/xz/lzma"
 )
 
@@ -61,9 +60,9 @@ func DecompJRE(version string) {
 		unzip(getRuntimeJREDir()+"/jre.zip", getRuntimeJREDir())
 		out, err := exec.Command("chmod", "-R", "+x", getRuntimeJREDir()).CombinedOutput()
 		if err != nil {
-			color.Red("problem unziping "+targetName+"%s", err)
+			log.Fatalln("problem unziping "+targetName+"%s", err)
 		}
-		println("%s", out)
+		log.Printf("%s\n", out)
 	}
 
 }
@@ -73,23 +72,23 @@ func DecompLzma(archive, target string) {
 	f, err := os.Open(archive)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalln(err)
 	}
 
 	r, err := lzma.NewReader(bufio.NewReader(f))
 
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalln(err)
 	}
 
 	output, err := os.Create(target)
 
 	if err != nil {
-		color.Red("error %s", err)
+		log.Fatalf("error %s\n", err)
 	}
 
 	cop, _ := io.Copy(output, r)
-	fmt.Println(cop, "creaded")
+	log.Println(cop, "creaded")
 	os.Remove(archive)
 
 }

@@ -3,10 +3,11 @@
 build
 test
 .gradle
+.gogradle
 
 *.jar
 *.zip
-
+bin
 vendor
 JavaWrapper
 JavaWrapper.exe

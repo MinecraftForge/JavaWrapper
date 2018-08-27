@@ -22,10 +22,8 @@ package util
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
+	"log"
 	"os"
-
-	"github.com/fatih/color"
 )
 
 type launcherJSON struct {
@@ -90,6 +88,7 @@ func GetJreInfo() (string, string, string, string) {
 
 	err := json.NewDecoder(buf).Decode(&ljObj)
 	if err != nil {
+		log.Fatalln(err)
 		panic(err)
 	}
 
@@ -110,7 +109,7 @@ func GetJreInfo() (string, string, string, string) {
 			version = ljObj.Windows.Arch32.Jre.Version
 			url = ljObj.Windows.Arch32.Jre.URL
 		} else {
-			color.Red("UNABLE TO DETERMINE ARCHITECTURE NOW SHUTTING DOWN")
+			log.Fatal("UNABLE TO DETERMINE ARCHITECTURE NOW EXITING")
 			os.Exit(2)
 		}
 	case "darwin":
@@ -119,7 +118,7 @@ func GetJreInfo() (string, string, string, string) {
 		version = ljObj.Osx.Arch64.Jre.Version
 		url = ljObj.Osx.Arch64.Jre.URL
 	case "linux":
-		color.Red("Sorry Mojang has not build a JRE for this platfrom please update to your java " +
+		log.Fatal("Sorry Mojang has not build a JRE for this platfrom please update to your java " +
 			"go to http://openjdk.java.net/install/ or " +
 			"http://www.oracle.com/technetwork/java/javase/downloads/index.html to download the latest java.")
 		os.Exit(3)
@@ -140,7 +139,7 @@ func GetLauncherUrl() string {
 
 	err := json.NewDecoder(buf).Decode(&ljObj)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalln(err)
 	}
 
 	return ljObj.Java.Lzma.URL

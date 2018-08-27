@@ -1,6 +1,6 @@
 
 plugins {
-	id 'org.echocat.golang' version '0.1.16'
+	id 'com.github.blindpirate.gogradle' version '0.10'
 	id 'maven-publish'
 }
 
@@ -8,156 +8,160 @@ version = project.version
 group 'github.com/MinecraftForge/JavaWrapper'
 
 golang {
-	platforms = System.getProperty("platforms", project.platforms)
-
-	// packageName = project.name
-	dependencies {
-		build 'github.com/fatih/color'
-		build 'github.com/ulikunitz/xz/lzma'
-
-	//Hack to fix the build
-	deleteAllCachedDependenciesOnClean = true
-	}
-
-	build {
-		excludes = [
-			'.git/**',
-			'build.gradle',
-			'build/**',
-			'.gradle/**',
-			'gradle/**'
-		]
-
-	useTemporaryGopath = true
-	//Manully change the output directory
-	outputFilenamePattern = "$buildDir/out/$project.binname-v$project.version-%{platform}%{extension}"
-	}
-
-	toolchain {
-		goversion = 'go1.8.3'
-	}
+	packagePath = 'github.com/MinecraftForge/JavaWrapper'
 }
 
-task renameBin(type: Copy) {
-	dependsOn baseBuild
-	from("$buildDir/out/")
-	into("$buildDir/out/")
-	rename("$project.binname-v$project.version-windows-386.exe", "$project.binname-v$project.version-win.exe")
-	rename("$project.binname-v$project.version-linux-386", "$project.binname-v$project.version-linux")
-	rename("$project.binname-v$project.version-darwin-amd64", "$project.binname-v$project.version-osx")
+// golang {
+// 	platforms = System.getProperty("platforms", project.platforms)
 
-}
+// 	// packageName = project.name
+// 	dependencies {
+// 		build 'github.com/fatih/color'
+// 		build 'github.com/ulikunitz/xz/lzma'
 
-def baseInclude = "${project.binname}-v${project.version}"
+// 	//Hack to fix the build
+// 	deleteAllCachedDependenciesOnClean = true
+// 	}
 
+// 	build {
+// 		excludes = [
+// 			'.git/**',
+// 			'build.gradle',
+// 			'build/**',
+// 			'.gradle/**',
+// 			'gradle/**'
+// 		]
 
-import org.apache.tools.ant.taskdefs.condition.Os
+// 	useTemporaryGopath = true
+// 	//Manully change the output directory
+// 	outputFilenamePattern = "$buildDir/out/$project.binname-v$project.version-%{platform}%{extension}"
+// 	}
 
-task shrinkWrapper {
-	dependsOn renameBin
+// 	toolchain {
+// 		goversion = 'go1.8.3'
+// 	}
+// }
 
-	ext.Shrink = { target ->
-		exec {
-			if (Os.isFamily(Os.FAMILY_UNIX)) {
-				commandLine './upxrepkg/upx-linux', target
-			} else if (Os.isFamily(Os.FAMILY_MAC)) {
-				commandLine './upxrepkg/upx-darwin', target
-			} else if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-				commandLine './upxrepkg/upx-win.exe', target
-			}
-		}
-	}
-	doLast {
-		Shrink("$buildDir/out/$baseInclude-osx")
-		Shrink("$buildDir/out/$baseInclude-linux")
-		Shrink("$buildDir/out/$baseInclude-win.exe")
-	}
-}
+// task renameBin(type: Copy) {
+// 	dependsOn baseBuild
+// 	from("$buildDir/out/")
+// 	into("$buildDir/out/")
+// 	rename("$project.binname-v$project.version-windows-386.exe", "$project.binname-v$project.version-win.exe")
+// 	rename("$project.binname-v$project.version-linux-386", "$project.binname-v$project.version-linux")
+// 	rename("$project.binname-v$project.version-darwin-amd64", "$project.binname-v$project.version-osx")
 
-task createAppDir {
-	dependsOn shrinkWrapper
-	doLast {
-		def appDir = new File("$buildDir/pkg/app-${project.version}/$baseInclude-osx.app/Contents/MacOs")
-		if (!appDir.exists()) {
-			appDir.mkdirs()
-		}
+// }
 
-		copy {
-			from "$buildDir/out/$baseInclude-osx"
-			into "$buildDir/pkg/app-${project.version}/$baseInclude-osx.app/Contents/MacOs/"
-		}
-
-		String contents = new File("Info.plist").getText('UTF-8')
-		contents = contents.replaceAll("@NAME@", project.binname).replaceAll("@VERSION@", project.version).replaceAll("@EXE@", "$baseInclude-osx")
-		new File("$buildDir/pkg/app-${project.version}/$baseInclude-osx.app/Contents/Info.plist").write(contents, 'UTF-8')
-
-	}
+// def baseInclude = "${project.binname}-v${project.version}"
 
 
-}
+// import org.apache.tools.ant.taskdefs.condition.Os
 
-task pkgWindows(type: Zip) {
-	dependsOn shrinkWrapper
-	baseName = "$project.binname"
-	classifier = "win"
-	version = project.version
-	destinationDir file("${buildDir}/pkg")
-	from "$buildDir/out/"
-	include "$baseInclude-win.exe"
-}
+// task shrinkWrapper {
+// 	dependsOn renameBin
 
-task pkgOsxApp(type: Tar) {
-	dependsOn createAppDir
-	baseName = "$project.binname"
-	classifier = 'osx'
-	version = project.version
-	extension = 'tar.gz'
-	destinationDir file("${buildDir}/pkg")
-	compression = Compression.GZIP
-	from ("$buildDir/pkg/app-${project.version}")
-}
+// 	ext.Shrink = { target ->
+// 		exec {
+// 			if (Os.isFamily(Os.FAMILY_UNIX)) {
+// 				commandLine './upxrepkg/upx-linux', target
+// 			} else if (Os.isFamily(Os.FAMILY_MAC)) {
+// 				commandLine './upxrepkg/upx-darwin', target
+// 			} else if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+// 				commandLine './upxrepkg/upx-win.exe', target
+// 			}
+// 		}
+// 	}
+// 	doLast {
+// 		Shrink("$buildDir/out/$baseInclude-osx")
+// 		Shrink("$buildDir/out/$baseInclude-linux")
+// 		Shrink("$buildDir/out/$baseInclude-win.exe")
+// 	}
+// }
 
-task pkgLinux(type: Tar) {
-	dependsOn shrinkWrapper
-	baseName = "$project.binname"
-	classifier = 'linux'
-	version = project.version
-	extension = 'tar.gz'
-	destinationDir file("${buildDir}/pkg")
-	compression = Compression.GZIP
-	from "$buildDir/out/"
-	include "$baseInclude-linux"
-}
+// task createAppDir {
+// 	dependsOn shrinkWrapper
+// 	doLast {
+// 		def appDir = new File("$buildDir/pkg/app-${project.version}/$baseInclude-osx.app/Contents/MacOs")
+// 		if (!appDir.exists()) {
+// 			appDir.mkdirs()
+// 		}
 
-task pkg() {
-	dependsOn pkgLinux, pkgOsxApp, pkgWindows
-	description 'Creates package for each platform'
-}
+// 		copy {
+// 			from "$buildDir/out/$baseInclude-osx"
+// 			into "$buildDir/pkg/app-${project.version}/$baseInclude-osx.app/Contents/MacOs/"
+// 		}
 
-task wrapper(type: Wrapper) {
-	gradleVersion = '3.3'
-}
+// 		String contents = new File("Info.plist").getText('UTF-8')
+// 		contents = contents.replaceAll("@NAME@", project.binname).replaceAll("@VERSION@", project.version).replaceAll("@EXE@", "$baseInclude-osx")
+// 		new File("$buildDir/pkg/app-${project.version}/$baseInclude-osx.app/Contents/Info.plist").write(contents, 'UTF-8')
 
-publishing {
-	repositories {
-		maven {
-			name  'Forge Maven'
-			credentials {
-				username 'forge'
-				password "$project.forgeMvnPass"
+// 	}
 
-			}
-			url "http://files.minecraftforge.net/maven/manage/upload"
-		}
-	}
-	publications {
-		maven(MavenPublication) {
-			groupId 'net.minecraftforge.javawrapper'
-			artifactId 'javawrapper'
-			artifact(pkgWindows)
-			artifact(pkgOsxApp)
-			artifact(pkgLinux)
-		}
-	}
-}
+
+// }
+
+// task pkgWindows(type: Zip) {
+// 	dependsOn shrinkWrapper
+// 	baseName = "$project.binname"
+// 	classifier = "win"
+// 	version = project.version
+// 	destinationDir file("${buildDir}/pkg")
+// 	from "$buildDir/out/"
+// 	include "$baseInclude-win.exe"
+// }
+
+// task pkgOsxApp(type: Tar) {
+// 	dependsOn createAppDir
+// 	baseName = "$project.binname"
+// 	classifier = 'osx'
+// 	version = project.version
+// 	extension = 'tar.gz'
+// 	destinationDir file("${buildDir}/pkg")
+// 	compression = Compression.GZIP
+// 	from ("$buildDir/pkg/app-${project.version}")
+// }
+
+// task pkgLinux(type: Tar) {
+// 	dependsOn shrinkWrapper
+// 	baseName = "$project.binname"
+// 	classifier = 'linux'
+// 	version = project.version
+// 	extension = 'tar.gz'
+// 	destinationDir file("${buildDir}/pkg")
+// 	compression = Compression.GZIP
+// 	from "$buildDir/out/"
+// 	include "$baseInclude-linux"
+// }
+
+// task pkg() {
+// 	dependsOn pkgLinux, pkgOsxApp, pkgWindows
+// 	description 'Creates package for each platform'
+// }
+
+// task wrapper(type: Wrapper) {
+// 	gradleVersion = '3.3'
+// }
+
+// publishing {
+// 	repositories {
+// 		maven {
+// 			name  'Forge Maven'
+// 			credentials {
+// 				username 'forge'
+// 				password "$project.forgeMvnPass"
+
+// 			}
+// 			url "http://files.minecraftforge.net/maven/manage/upload"
+// 		}
+// 	}
+// 	publications {
+// 		maven(MavenPublication) {
+// 			groupId 'net.minecraftforge.javawrapper'
+// 			artifactId 'javawrapper'
+// 			artifact(pkgWindows)
+// 			artifact(pkgOsxApp)
+// 			artifact(pkgLinux)
+// 		}
+// 	}
+// }
 

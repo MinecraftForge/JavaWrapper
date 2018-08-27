@@ -20,21 +20,20 @@ package util
  */
 
 import (
+	"log"
 	"os"
 	"os/exec"
 	"strings"
-
-	"github.com/fatih/color"
 )
 
 func IsJavaInstalled() bool {
 	jv, err := exec.LookPath("java")
 
 	if err != nil {
-		color.Red("Java has not been found!")
+		log.Fatalln("Java has not been found!")
 		return false
 	} else {
-		color.Green("Java has been found at: %s", jv)
+		log.Printf("Java has been found at: %s\n", jv)
 		return true
 	}
 }
@@ -47,12 +46,11 @@ func IsJavaInstalled() bool {
  */
 func GenericSysJavaLauncher(target string) ([]byte, error) {
 	// color.Yellow("Forge wrapper is now launching %s", target)
-	color.Yellow("Now running from System JRE")
+	log.Println("Now running from System JRE")
 	out, err := exec.Command("java", "-jar", target).CombinedOutput()
 
 	if err != nil {
-		println(err)
-		// panic(err)
+		log.Println(err)
 	}
 
 	return out, err
@@ -71,7 +69,7 @@ func GenericMojangJavaLauncher(target string) ([]byte, error) {
 
 	darwinJRE := getRuntimeJREDir() + "/bin/java"
 	winJRE := getRuntimeJREDir() + "/bin/java.exe"
-	color.Yellow("Now running from Mojang JRE")
+	log.Println("Now running from Mojang JRE")
 
 	switch GetThisPlatform() {
 	case "windows":
@@ -81,7 +79,7 @@ func GenericMojangJavaLauncher(target string) ([]byte, error) {
 		out, err := exec.Command(darwinJRE, "-jar", target).CombinedOutput()
 		return out, err
 	case "linux":
-		color.Red("Sorry Mojang does not currently distribute a JRE for linux please download a JRE from" +
+		log.Fatalln("Sorry Mojang does not currently distribute a JRE for linux please download a JRE from" +
 			"http://openjdk.java.net/install/ or " +
 			"http://www.oracle.com/technetwork/java/javase/downloads/index.html")
 		os.Exit(3)
@@ -129,17 +127,17 @@ func ModedLauncher() {
 	_, err := Wrapper(binName)
 
 	if err != nil {
-		color.Yellow("Now launching in launcher mode")
+		log.Println("Now launching in launcher mode")
 		CheckForLauncher()
 		nout, nerr := Wrapper(getMcDir() + "/launcher.jar")
 		if nerr != nil {
 
-			print(nerr)
+			log.Fatalln(nerr)
 		}
-		print(string(nout))
+		log.Println(string(nout))
 
 	} else {
-		color.Yellow("Launching in Generic Jar Wrapper mode")
+		log.Println("Launching in Generic Jar Wrapper mode")
 	}
 
 }

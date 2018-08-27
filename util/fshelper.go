@@ -20,14 +20,12 @@ package util
  */
 
 import (
-	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"os/user"
 	"runtime"
 	"strings"
-
-	"github.com/fatih/color"
 )
 
 func GetThisPlatform() string {
@@ -87,10 +85,10 @@ func IsValidArch() bool {
 
 func checkForMcdir() {
 	if _, err := os.Stat(getMcDir()); os.IsNotExist(err) {
-		color.Red(getMcDir() + ", Not found")
-		color.Yellow("Creating Mc directory")
+		log.Fatalln(getMcDir() + ", Not found")
+		log.Println("Creating Mc directory")
 		os.MkdirAll(getMcDir(), os.ModePerm)
-		color.Green(getMcDir() + ", Has been created")
+		log.Println(getMcDir() + ", Has been created")
 	}
 }
 
@@ -100,7 +98,7 @@ func getMcDir() string {
 	home := usr.HomeDir
 
 	if err != nil {
-		fmt.Println("Unable to locate the user home directory")
+		log.Panicln("Unable to locate the user home directory")
 
 	}
 	if GetThisPlatform() == "windows" {
@@ -120,11 +118,11 @@ func checkForRuntime() {
 	// ver := GetJREVersion()
 	runDir := getRuntimeJREDir()
 	if _, err := os.Stat(runDir); os.IsNotExist(err) {
-		color.Red(runDir + ", Not found")
-		color.Yellow("Now setting up runtime")
+		log.Fatalln(runDir + ", Not found")
+		log.Println("Now setting up runtime")
 		os.MkdirAll(runDir, os.ModePerm)
 		runtimeDownloader()
-		color.Green(runDir + ", Has been created")
+		log.Println(runDir + ", Has been created")
 	}
 }
 
@@ -132,10 +130,10 @@ func CheckForLauncher() {
 	checkForMcdir()
 	jar := getMcDir() + "/launcher.jar"
 	if _, err := os.Stat(jar); os.IsNotExist(err) {
-		color.Red(jar + ", Not found now downloading.")
+		log.Println(jar + ", Not found now downloading.")
 		DownloadFromUrl(GetLauncherUrl(), getMcDir())
-		color.Green(jar + ", Has been downloaded.")
-		color.Green("decompressing launcher.jar.lzma")
+		log.Println(jar + ", Has been downloaded.")
+		log.Println("decompressing launcher.jar.lzma")
 		DecompLauncher()
 	}
 }
@@ -144,7 +142,7 @@ func runtimeDownloader() {
 	platform, arch, version, url := GetJreInfo()
 	path := getMcDir() + "/runtime/" + version
 
-	color.Green("Downloading Jre version %s for %s%s", version, platform, arch)
+	log.Printf("Downloading Jre version %s for %s%s", version, platform, arch)
 	DownloadFromUrl(url, path)
 	DecompJRE(version)
 }

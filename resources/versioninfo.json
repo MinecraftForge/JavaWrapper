@@ -1,0 +1,18 @@
+{
+	"FixedFileInfo":
+	{
+		"FileVersion": {
+			"Major": @MAJOR@,
+			"Minor": @MINOR@,
+			"Build": @BUILD@
+		}
+	},
+	"StringFileInfo":
+	{
+		"FileDescription": "javawrapper",
+		"LegalCopyright": "MinecraftForge, Anthony Anderson(Illyohs), and Contributers",
+		"ProductName": "java wrapper",
+		"ProductVersion": "@VERSION@"
+	},
+	"IconPath": "resouces/icon.ico"
+}

@@ -20,14 +20,12 @@ package util
  */
 
 import (
-	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"strings"
-
-	"github.com/fatih/color"
 )
 
 func DownloadFromUrl(url string, path string) {
@@ -37,25 +35,24 @@ func DownloadFromUrl(url string, path string) {
 	// color.Cyan("Downloading %s from %s", fileName, url)
 	output, err := os.Create(path + "/" + fileName)
 	if err != nil {
-		color.Red("Error while creating", fileName, "-", err)
-		// panic(err)
+		log.Fatalln("Error while creating", fileName, "-", err)
 		return
 	}
 	defer output.Close()
 
 	response, err := http.Get(url)
 	if err != nil {
-		color.Red("Error while downloading", url, "-", err)
+		log.Fatalln("Error while downloading", url, "-", err)
 		return
 	}
 	defer response.Body.Close()
 
 	n, err := io.Copy(output, response.Body)
 	if err != nil {
-		color.Red("Error while downloading", url, "-", err)
+		log.Fatalln("Error while downloading", url, "-", err)
 		return
 	}
-	fmt.Println(n, "bytes downloaded.")
+	log.Println("Finsihed downloading ", fileName, n, "bytes downloaded.")
 }
 
 func StringFromWebJson(url string) string {
@@ -63,13 +60,14 @@ func StringFromWebJson(url string) string {
 	response, err := http.Get(url)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalln(err)
 	}
 
 	bytes, err := ioutil.ReadAll(response.Body)
 
 	if err != err {
-		fmt.Println(err)
+		log.Fatalln(err)
+		// fmt.Println(err)
 	}
 
 	return string(bytes)
