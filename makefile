@@ -1,5 +1,4 @@
 # CONSTANTS
-NAME=javawrapper
 MAJOR=2
 MINOR=0
 
@@ -38,9 +37,15 @@ compileWin: prepare
 	go get github.com/josephspurrier/goversioninfo/cmd/goversioninfo
 	go generate
 	GOOS=windows G0ARCH=386 go build -o ${BINDIR}/javawrapper-v${VERSION}-win
+
+
 	rm versioninfo.json
 	rm javawrapper.exe.manifest
 	rm *.syso
+
+
+packageWin: compileWin
+	zip -j javawrapper-v${VERSION}-win.zip  ${BINDIR}/javawrapper-v${VERSION}-win
 
 compileOsx: prepare
 	GOOS=darwin GOARCH=amd64 go build -o ${BINDIR}/javawrapper-v${VERSION}-osx
@@ -48,4 +53,5 @@ compileOsx: prepare
 
 clean:
 	rm -rf ${BIN}
+	rm *.zip
 
