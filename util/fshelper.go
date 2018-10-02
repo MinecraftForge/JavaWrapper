@@ -85,7 +85,8 @@ func IsValidArch() bool {
 
 func checkForMcdir() {
 	if _, err := os.Stat(getMcDir()); os.IsNotExist(err) {
-		log.Fatalln(getMcDir() + ", Not found")
+		// log.Fatalln(getMcDir() + ", Not found")
+		log.Println(getMcDir() + ", Not found")
 		log.Println("Creating Mc directory")
 		os.MkdirAll(getMcDir(), os.ModePerm)
 		log.Println(getMcDir() + ", Has been created")
@@ -118,7 +119,7 @@ func checkForRuntime() {
 	// ver := GetJREVersion()
 	runDir := getRuntimeJREDir()
 	if _, err := os.Stat(runDir); os.IsNotExist(err) {
-		log.Fatalln(runDir + ", Not found")
+		log.Println(runDir + ", Not found")
 		log.Println("Now setting up runtime")
 		os.MkdirAll(runDir, os.ModePerm)
 		runtimeDownloader()
